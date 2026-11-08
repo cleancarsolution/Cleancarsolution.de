@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { Resend } from 'resend';
 import {
   buildInquiryEmail,
@@ -20,16 +20,26 @@ const BODY_LIMIT_BYTES = 32 * 1024;
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 10 * 60_000;
 
-/** Zeitpunkte der letzten Anfragen je IP – nur im Speicher der laufenden Instanz, bremst einzelne Absender. */
-const recentByIp = new Map<string, number[]>();
+/**
+ * Zeitpunkte der letzten Anfragen je Absender – nur im Speicher der laufenden Instanz, bremst einzelne Absender.
+ * Schlüssel ist ein Hash der IP mit zufälligem Salz je Instanz; die IP selbst wird nie gespeichert (Datenschutz, Ziffer 6).
+ */
+const recentBySender = new Map<string, number[]>();
+const SENDER_SALT = randomBytes(16);
 
 export async function POST(request: Request): Promise<Response> {
-  const retryAfter = rateLimit(clientIp(request));
+  const retryAfter = rateLimit(senderKey(request));
   if (retryAfter !== null) {
-    return Response.json(apiError('rate_limited', 'Zu viele Anfragen in kurzer Zeit. Bitte versuchen Sie es später erneut.'), {
-      status: 429,
-      headers: { 'Retry-After': String(retryAfter) },
-    });
+    return Response.json(
+      apiError(
+        'rate_limited',
+        'Zu viele Anfragen in kurzer Zeit. Bitte versuchen Sie es später erneut.',
+      ),
+      {
+        status: 429,
+        headers: { 'Retry-After': String(retryAfter) },
+      },
+    );
   }
 
   const raw = await request.text();
@@ -38,7 +48,9 @@ export async function POST(request: Request): Promise<Response> {
   }
   const body = parseJson(raw);
   if (body === undefined) {
-    return Response.json(apiError('bad_request', 'Die Anfrage konnte nicht gelesen werden.'), { status: 400 });
+    return Response.json(apiError('bad_request', 'Die Anfrage konnte nicht gelesen werden.'), {
+      status: 400,
+    });
   }
 
   const id = randomUUID();
@@ -58,7 +70,10 @@ export async function POST(request: Request): Promise<Response> {
 
   if (!(await notify({ ...result.data, id, receivedAt }))) {
     return Response.json(
-      apiError('internal_error', 'Es ist ein interner Fehler aufgetreten. Bitte versuchen Sie es später erneut.'),
+      apiError(
+        'internal_error',
+        'Es ist ein interner Fehler aufgetreten. Bitte versuchen Sie es später erneut.',
+      ),
       { status: 500 },
     );
   }
@@ -71,10 +86,14 @@ async function notify(inquiry: InquiryNotification): Promise<boolean> {
   if (!apiKey) {
     // Lokal ohne Schlüssel bleibt das Formular testbar – in Produktion ist das ein Konfigurationsfehler
     if (process.env.NODE_ENV === 'development') {
-      console.info(`[Anfrage ${inquiry.id}] RESEND_API_KEY fehlt – nur protokolliert, nicht versendet`);
+      console.info(
+        `[Anfrage ${inquiry.id}] RESEND_API_KEY fehlt – nur protokolliert, nicht versendet`,
+      );
       return true;
     }
-    console.error(`[Anfrage ${inquiry.id}] RESEND_API_KEY fehlt – Anfrage konnte nicht versendet werden`);
+    console.error(
+      `[Anfrage ${inquiry.id}] RESEND_API_KEY fehlt – Anfrage konnte nicht versendet werden`,
+    );
     return false;
   }
 
@@ -115,19 +134,24 @@ function isHoneypotFilled(body: unknown): boolean {
 }
 
 /** Auf Vercel setzt die Plattform `x-forwarded-for` selbst – der erste Eintrag ist der Besucher. */
-function clientIp(request: Request): string {
-  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unbekannt';
+function senderKey(request: Request): string {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unbekannt';
+  return createHash('sha256').update(SENDER_SALT).update(ip).digest('base64url');
 }
 
-/** Gleitendes Fenster je IP: `null`, wenn die Anfrage durch darf, sonst die Wartezeit in Sekunden. */
-function rateLimit(ip: string, now = Date.now()): number | null {
+/** Gleitendes Fenster je Absender: `null`, wenn die Anfrage durch darf, sonst die Wartezeit in Sekunden. */
+function rateLimit(sender: string, now = Date.now()): number | null {
   const windowStart = now - RATE_LIMIT_WINDOW_MS;
-  const hits = (recentByIp.get(ip) ?? []).filter((time) => time > windowStart);
-  if (hits.length >= RATE_LIMIT_MAX) {
-    recentByIp.set(ip, hits);
-    return Math.ceil(((hits[0] ?? now) + RATE_LIMIT_WINDOW_MS - now) / 1000);
+  // Bei jeder Anfrage alles Abgelaufene verwerfen – gemerkt wird nur, was im Zeitfenster liegt
+  for (const [key, times] of recentBySender) {
+    const recent = times.filter((time) => time > windowStart);
+    if (recent.length) recentBySender.set(key, recent);
+    else recentBySender.delete(key);
   }
-  if (recentByIp.size > 10_000) recentByIp.clear();
-  recentByIp.set(ip, [...hits, now]);
+  const hits = recentBySender.get(sender) ?? [];
+  if (hits.length >= RATE_LIMIT_MAX)
+    return Math.ceil(((hits[0] ?? now) + RATE_LIMIT_WINDOW_MS - now) / 1000);
+  if (recentBySender.size > 10_000) recentBySender.clear();
+  recentBySender.set(sender, [...hits, now]);
   return null;
 }

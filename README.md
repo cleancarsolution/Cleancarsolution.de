@@ -172,14 +172,17 @@ auf dem dunklen Grund, in der Hell-Fassung (`LOGO_PALETTE.light`): Navy `#010D61
 
 ## Vor dem Livegang (offene Punkte)
 
-- [ ] **Adresse bestätigen** – die bisherige Website nennt „Hermannstraße 7, 40233 Düsseldorf, im Autofit Ehreke“.
+- [x] **Adresse bestätigt:** Himmelgeister Str. 35, 40225 Düsseldorf (Website, Impressum, Datenschutz, Google-Profil).
 - [ ] Öffnungszeiten ergänzen (`site.openingHours`), aktuell „Termine nach Vereinbarung“.
 - [ ] Leistungsumfang „Handwäsche innen & außen ab 89 €“ bestätigen (`apps/web/src/content/offer.ts`).
-- [ ] Die Reel-Vorschauen in „Einblick“ laden nach Klick von Instagram (Zwei-Klick-Lösung) – die Einbindung von Instagram (Meta) in der Datenschutzerklärung aufführen. Weitere Beiträge: `apps/web/src/content/gallery.ts` → `feed.posts`.
+- [x] Die Reel-Vorschauen in „Einblick“ laden nach Klick von Instagram (Zwei-Klick-Lösung) – in der Datenschutzerklärung aufgeführt (Ziffer 10). Weitere Beiträge: `apps/web/src/content/gallery.ts` → `feed.posts`.
 - [ ] Handwäsche-Film (`CleanInnen.mp4`) wie die übrigen Leistungsfilme mit ffmpeg aufbereiten: 720p, Hochformat-Schnitt, Überblendung zur Schleife – spart rund 9 MB.
-- [ ] Impressum & Datenschutz einfügen – die Seiten sind bewusst leer (`apps/web/src/app/impressum`, `…/datenschutz`).
+- [x] Impressum & Datenschutz – Text vom Kunden (§ 5 DDG, Webdesign Palmer Digital); Datenschutzerklärung ergänzt um
+  Hosting (Vercel), Kontaktformular (Resend, STRATO), Instagram-Zwei-Klick-Lösung und Beschwerderecht. Bei neuen Diensten
+  (Analytics, Karten, Schriften von Dritten …) die Datenschutzerklärung mitziehen.
+- [ ] AV-Vertrag (Art. 28 DSGVO) mit STRATO im Kundenlogin abschließen – bei Vercel und Resend ist er Teil der Nutzungsbedingungen.
 - [ ] Eigene Produkte in `ProductBanner` einfügen – der Platz unter der Markenzeile der Preis-Sektion ist vorbereitet und leer.
-- [ ] Resend: Domain `cleancarsolution.de` verifizieren (DNS bei Strato), `RESEND_API_KEY` und `MAIL_FROM` auf Vercel setzen.
+- [x] Resend: Domain `cleancarsolution.de` verifiziert (DNS bei Strato) – auf Vercel `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO` setzen.
 - [ ] Optional: eigene Fotos (Innenraum, Leder, Cabrio, Trockendampf) statt lizenzfreier Stockfotos.
 
 ## Deployment
