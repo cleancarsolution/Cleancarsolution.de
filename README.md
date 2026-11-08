@@ -55,10 +55,10 @@ npm run dev
 ## Architektur
 
 ```
-Browser ──(Formular, JSON)──▶ apps/api  POST /v1/inquiries ──▶ JSONL-Store + E-Mail an info@…
+Browser ──(Formular, JSON)──▶ apps/web  POST /api/inquiries (Vercel Function) ──▶ Resend ──▶ info@… (Strato)
    ▲                               ▲
    │ statisch gerendert            │ gleiche Validierung
-apps/web ◀──────── @ccs/shared (site · services · inquirySchema · API-Typen)
+apps/web ◀──────── @ccs/shared (site · services · inquirySchema · E-Mail-Vorlage · API-Typen)
 ```
 
 - **Single Source of Truth:** Firmendaten (`packages/shared/src/site.ts`) und Leistungen
@@ -69,8 +69,10 @@ apps/web ◀──────── @ccs/shared (site · services · inquirySch
 - **Frontend:** Server Components als Standard, Client Components nur für Interaktion (Menüs, Video,
   Scroll-Effekte, Formular). Smooth Scrolling via Lenis, Animationen via motion, respektiert
   „Bewegung reduzieren“.
-- **Backend:** Fastify mit Helmet, CORS, Rate-Limiting, Honeypot-Spamschutz, Speicherung als JSONL und
-  E-Mail-Benachrichtigung (SMTP optional, sonst Log). Details: [`apps/api/README.md`](apps/api/README.md).
+- **Formular-Versand:** Route Handler `apps/web/src/app/api/inquiries` – Honeypot, Rate-Limit, gleiche
+  Validierung, E-Mail per [Resend](https://resend.com) an `MAIL_TO` (Reply-To = Kunde). Gespeichert wird nichts.
+- **Backend (optional):** Die Fastify-API (`apps/api`, SMTP + JSONL) wird von der Website nicht mehr genutzt.
+  Details: [`apps/api/README.md`](apps/api/README.md).
 
 ## Inhalte pflegen
 
@@ -177,14 +179,14 @@ auf dem dunklen Grund, in der Hell-Fassung (`LOGO_PALETTE.light`): Navy `#010D61
 - [ ] Handwäsche-Film (`CleanInnen.mp4`) wie die übrigen Leistungsfilme mit ffmpeg aufbereiten: 720p, Hochformat-Schnitt, Überblendung zur Schleife – spart rund 9 MB.
 - [ ] Impressum & Datenschutz einfügen – die Seiten sind bewusst leer (`apps/web/src/app/impressum`, `…/datenschutz`).
 - [ ] Eigene Produkte in `ProductBanner` einfügen – der Platz unter der Markenzeile der Preis-Sektion ist vorbereitet und leer.
-- [ ] SMTP-Zugang für Benachrichtigungs-E-Mails hinterlegen (`apps/api/.env`).
+- [ ] Resend: Domain `cleancarsolution.de` verifizieren (DNS bei Strato), `RESEND_API_KEY` und `MAIL_FROM` auf Vercel setzen.
 - [ ] Optional: eigene Fotos (Innenraum, Leder, Cabrio, Trockendampf) statt lizenzfreier Stockfotos.
 
 ## Deployment
 
-- **Web:** beliebiger Node-Host oder Vercel – `npm run build -w @ccs/web` und `npm run start -w @ccs/web`.
-  Variablen: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`. Auf Vercel: Root Directory `apps/web` (im Dashboard),
-  alles Weitere steht in `apps/web/vercel.json` (Turborepo-Build, Region Frankfurt).
-- **API:** Docker (`apps/api/Dockerfile`) oder Node – `npm run build -w @ccs/api` und
+- **Web (Vercel):** Root Directory `apps/web` (im Dashboard), alles Weitere steht in `apps/web/vercel.json`
+  (Turborepo-Build, Region Frankfurt). Variablen: `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`
+  (siehe `apps/web/.env.example`). Alte WordPress-Adressen leiten per `redirects()` in `apps/web/next.config.ts` weiter.
+- **API (optional, für die Website nicht nötig):** Docker (`apps/api/Dockerfile`) oder Node – `npm run build -w @ccs/api` und
   `npm run start -w @ccs/api`. Variablen siehe `apps/api/.env.example`; `DATA_DIR` auf ein persistentes
   Volume legen.

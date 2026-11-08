@@ -31,6 +31,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  /** Adressen der alten WordPress-Seite (laut wp-sitemap.xml) – Google & Lesezeichen landen auf der neuen Seite. */
+  async redirects() {
+    return [
+      { source: '/rechtliches', destination: '/impressum', permanent: true },
+      { source: '/wp-sitemap.xml', destination: '/sitemap.xml', permanent: true },
+      { source: '/hello-world', destination: '/', permanent: true },
+      { source: '/category/:path*', destination: '/', permanent: true },
+      { source: '/author/:path*', destination: '/', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

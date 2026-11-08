@@ -97,7 +97,7 @@ function collectErrors(values: Values, today: string): Errors {
 }
 
 /**
- * Terminanfrage → `POST /v1/inquiries` (apps/api).
+ * Terminanfrage → `POST /api/inquiries` (Route Handler, Versand per Resend).
  * Leistungen lassen sich von überall vorwählen (`requestService`, `?leistung=`).
  * Eingaben bleiben bei jedem Fehler erhalten.
  */

@@ -1,23 +1,10 @@
-import {
-  API_ROUTES,
-  type ApiErrorCode,
-  type InquiryFieldErrors,
-  type InquiryInput,
-  type InquiryResponse,
-} from '@ccs/shared';
+import type { ApiErrorCode, InquiryFieldErrors, InquiryInput, InquiryResponse } from '@ccs/shared';
 
-/**
- * Browser-Client für die API (apps/api).
- * Basis-URL aus `NEXT_PUBLIC_API_URL` (wird zur Build-Zeit eingesetzt), lokal Fallback auf Port 4000.
- */
-export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000').replace(/\/+$/, '');
+/** Browser-Client für die Terminanfrage – Route Handler derselben Domain (`app/api/inquiries`, Versand per Resend). */
+export const INQUIRY_ENDPOINT = '/api/inquiries';
 
 /** Nach dieser Zeit wird eine Anfrage abgebrochen. */
 export const API_TIMEOUT_MS = 10_000;
-
-export function apiUrl(path: string): string {
-  return `${API_BASE_URL}${path}`;
-}
 
 /** Warum eine Anfrage die API nicht (vollständig) erreicht hat. */
 export type ApiRequestErrorKind = 'network' | 'timeout' | 'aborted';
@@ -28,7 +15,7 @@ const REQUEST_ERROR_MESSAGES: Record<ApiRequestErrorKind, string> = {
   aborted: 'Die Anfrage wurde abgebrochen.',
 };
 
-/** Verbindungsfehler: offline, CORS, Server nicht gestartet, Zeitüberschreitung oder Abbruch. */
+/** Verbindungsfehler: offline, Server nicht erreichbar, Zeitüberschreitung oder Abbruch. */
 export class ApiRequestError extends Error {
   readonly kind: ApiRequestErrorKind;
 
@@ -53,7 +40,7 @@ export interface RequestOptions {
 }
 
 /**
- * Sendet eine Terminanfrage: `POST /v1/inquiries` (JSON).
+ * Sendet eine Terminanfrage: `POST /api/inquiries` (JSON).
  * - 201 → `{ ok: true, id, receivedAt }`
  * - 422 → `{ ok: false, error: 'validation_error', fieldErrors }`
  * - 429 → `{ ok: false, error: 'rate_limited' }` (auch wenn der Server einen fremden Fehler-Body liefert)
@@ -61,12 +48,12 @@ export interface RequestOptions {
  */
 export async function submitInquiry(input: InquiryInput, options: RequestOptions = {}): Promise<InquiryResult> {
   return withTimeout(options, async (signal) => {
-    const response = await fetch(apiUrl(API_ROUTES.inquiries), {
+    const response = await fetch(INQUIRY_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(input),
       signal,
-      mode: 'cors',
+      mode: 'same-origin',
       credentials: 'omit',
       cache: 'no-store',
     });
