@@ -1,0 +1,227 @@
+/*
+ * Studiolicht – Preis-Sektion.
+ * Ein Paneel aus schwarzem Lack im Nachtstudio: Reflexe der LED-Deckenleisten laufen schräg darüber,
+ * die Chrom-Ziffern fangen das Licht, darunter spiegeln sie sich im glänzenden Boden.
+ *
+ * Auslöser: [data-lit='true'] am Paneel (LacquerPanel, einmalig beim Hineinscrollen) – das Studio wird hell.
+ * Zeiger:   --mx / --my (−1 … 1) am Paneel, nur Maus. Reflexe und Glanzlicht folgen dem Blickwinkel.
+ * Animiert werden ausschließlich transform und opacity.
+ * „Bewegung reduzieren“: Endzustand sofort, keine Parallaxe, Glanzlicht ruht.
+ */
+
+.panel {
+  --mx: 0;
+  --my: 0;
+  background-color: var(--color-ink-950);
+  background-image: linear-gradient(180deg, var(--color-ink-900) 0%, var(--color-ink-950) 70%);
+}
+
+/* ── Licht an ─────────────────────────────────────────────────────────────── */
+
+/* Oberkante und Raumlicht folgen der ersten Leiste */
+.ambient {
+  opacity: 0;
+  transition: opacity 1.6s var(--ease-out-quint) 0.3s;
+}
+
+/* Jede LED-Leiste schaltet sich ruhig ein – eine nach der anderen (--i = Reihenfolge) */
+.strip {
+  opacity: 0;
+  transition: opacity 1.1s var(--ease-out-quint);
+  transition-delay: calc(0.2s + var(--i, 0) * 0.16s);
+}
+
+/* Die Ziffern liegen im Dunkel, bis das Licht sie trifft */
+.lit {
+  opacity: 0;
+  transition: opacity 1.8s var(--ease-out-quint) 0.45s;
+}
+
+.floor {
+  transform: scaleX(0);
+  transform-origin: 12% 50%;
+  transition: transform 1.8s var(--ease-out-expo) 0.35s;
+}
+
+.reflection {
+  opacity: 0;
+  transition: opacity 2s var(--ease-out-quint) 0.9s;
+}
+
+.panel[data-lit='true'] .ambient,
+.panel[data-lit='true'] .strip,
+.panel[data-lit='true'] .lit {
+  opacity: 1;
+}
+
+.panel[data-lit='true'] .floor {
+  transform: scaleX(1);
+}
+
+.panel[data-lit='true'] .reflection {
+  opacity: 1;
+}
+
+/* ── Parallaxe der Reflexe ────────────────────────────────────────────────── */
+
+/* Ebene mit Tiefe: --depth-x/--depth-y = Weg bei Zeiger am Rand */
+.drift {
+  transform: translate3d(calc(var(--mx) * var(--depth-x, 16px)), calc(var(--my) * var(--depth-y, 8px)), 0);
+  transition: transform 1.4s var(--ease-out-quint);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .drift {
+    will-change: transform;
+  }
+}
+
+/* ── Chrom-Ziffern ────────────────────────────────────────────────────────── */
+
+/* Ziffernblock: Zeilenhöhe 0,8 → Unterkante = Grundlinie inkl. Überhang runder Ziffern (Mona Sans) */
+.digits {
+  display: block;
+  line-height: 0.8;
+}
+
+/* Unbeleuchtet: nur die Silhouette im dunklen Studio */
+.unlit {
+  color: var(--color-ink-700);
+}
+
+/* Poliertes Chrom: oben kaltes Weiß, in der Mitte das Eisblau des Raums, unten Licht vom Boden */
+.chrome {
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--color-sky-100) 32%,
+    var(--color-sky-200) 52%,
+    var(--color-royal-200) 70%,
+    var(--color-sky-200) 90%,
+    var(--color-sky-100) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glanzlicht: dieselben Ziffern in heißem Weiß, nur in einem weichen, schrägen Lichtband sichtbar */
+.hot {
+  background-image: linear-gradient(180deg, #ffffff 0%, #ffffff 62%, var(--color-sky-100) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/*
+ * Lichtband = Fenster (Maske) über einer deckungsgleichen Ziffern-Kopie. Das Fenster gleitet per transform,
+ * die Kopie darin gleitet exakt gegenläufig – sie bleibt stehen, nur das Licht wandert.
+ *   .sweep    Auftakt: Band zieht einmal herein und kommt auf der „8“ zur Ruhe (Keyframes)
+ *   .follow   folgt dem Zeiger (--mx), Ruhelage −18 %
+ *   .unfollow / .unsweep   die Gegenbewegungen
+ */
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.sweep {
+  transform: translateX(-100%);
+}
+
+.unsweep {
+  transform: translateX(100%);
+}
+
+.panel[data-lit='true'] .sweep {
+  animation: sweep-in 2.4s var(--ease-out-expo) 1.05s both;
+}
+
+.panel[data-lit='true'] .unsweep {
+  animation: sweep-out 2.4s var(--ease-out-expo) 1.05s both;
+}
+
+.follow {
+  transform: translateX(calc(-18% + var(--mx) * 40%));
+  transition: transform 1.1s var(--ease-out-quint);
+  -webkit-mask-image: linear-gradient(108deg, transparent 33%, #000 47%, #000 52%, transparent 66%);
+  mask-image: linear-gradient(108deg, transparent 33%, #000 47%, #000 52%, transparent 66%);
+}
+
+.unfollow {
+  transform: translateX(calc(18% - var(--mx) * 40%));
+  transition: transform 1.1s var(--ease-out-quint);
+}
+
+@keyframes sweep-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sweep-out {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ── Spiegelung im Boden ──────────────────────────────────────────────────── */
+
+.mirror {
+  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.16) 38%, transparent 78%);
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.16) 38%, transparent 78%);
+}
+
+.flip {
+  transform: scaleY(-1);
+  filter: blur(0.6px);
+}
+
+/* ── Bewegung reduzieren: Endzustand, keine Parallaxe ─────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient,
+  .strip,
+  .lit,
+  .floor,
+  .reflection,
+  .drift,
+  .follow,
+  .unfollow {
+    transition: none;
+  }
+
+  .ambient,
+  .strip,
+  .lit,
+  .reflection {
+    opacity: 1;
+  }
+
+  .floor,
+  .drift {
+    transform: none;
+  }
+
+  .sweep,
+  .unsweep,
+  .panel[data-lit='true'] .sweep,
+  .panel[data-lit='true'] .unsweep {
+    transform: none;
+    animation: none;
+  }
+
+  .follow {
+    transform: translateX(-18%);
+  }
+
+  .unfollow {
+    transform: translateX(18%);
+  }
+}

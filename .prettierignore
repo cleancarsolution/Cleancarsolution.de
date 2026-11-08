@@ -1,0 +1,10 @@
+node_modules
+.next
+.turbo
+dist
+package-lock.json
+apps/web/public
+*.mp4
+*.png
+*.jpg
+*.svg

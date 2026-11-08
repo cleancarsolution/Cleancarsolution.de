@@ -1,0 +1,151 @@
+import { site } from '@ccs/shared';
+import { offer } from '@/content/offer';
+import { Brands } from '@/components/sections/about/Brands';
+import { Container } from '@/components/ui/Container';
+import { Eyebrow } from '@/components/ui/Eyebrow';
+import { Check } from '@/components/ui/icons';
+import { Reveal } from '@/components/ui/Reveal';
+import { RevealText } from '@/components/ui/RevealText';
+import { TwoTone } from '@/components/ui/TwoTone';
+import { cn } from '@/lib/cn';
+import { LacquerPanel } from './offer/LacquerPanel';
+import { ProductBanner } from './offer/ProductBanner';
+import { QuoteList } from './offer/QuoteList';
+import { ServiceRequestLink } from './offer/ServiceRequestLink';
+import { StudioPrice } from './offer/StudioPrice';
+import { StudioStrips } from './offer/StudioStrips';
+import styles from './offer/studio.module.css';
+
+/** „Faire Preise. Kompromisslose Qualität.“ → zwei Sätze, zweiter Satz im zweiten Ton. */
+function sentences(text: string): string[] {
+  return text.split(/(?<=\.)\s+/).filter(Boolean);
+}
+
+/**
+ * 04 — PREISE (schwarz). Idee: „Studiolicht“.
+ * Das Angebot ist ein Paneel aus schwarzem Lack im Nachtstudio. Scrollt es ins Bild, schalten sich die
+ * LED-Deckenleisten nacheinander ein – ihre Reflexe laufen schräg über den Lack, die Chrom-Ziffern fangen
+ * das Licht, ein Glanzlicht legt sich auf die „89“, darunter spiegelt sich der Preis im Boden.
+ * Mit der Maus wandern Reflexe und Glanzlicht mit dem Blickwinkel. Darunter die übrigen Leistungen als
+ * ruhige Preisliste, zum Schluss die Produktmarken und der Platz für die eigenen Produkte (`ProductBanner`).
+ * Signalrot trägt nur das Angebots-Badge.
+ */
+export function Offer() {
+  const [first, ...rest] = sentences(offer.title);
+
+  return (
+    <section
+      id="preise"
+      aria-labelledby="preise-title"
+      className="relative isolate overflow-x-clip bg-ink-950 py-24 sm:py-32 lg:py-40"
+    >
+      <Container>
+        <header className="grid grid-cols-12 gap-x-5 lg:gap-x-8">
+          <div className="col-span-12 lg:col-span-7">
+            <Eyebrow index="04">{offer.eyebrow}</Eyebrow>
+            <h2 id="preise-title" className="mt-6 text-display-lg font-medium text-balance">
+              <RevealText text={first ?? offer.title} />
+              {rest.length ? (
+                <>
+                  {' '}
+                  <RevealText text={rest.join(' ')} wordClassName="text-sky-300/75" delay={0.14} />
+                </>
+              ) : null}
+            </h2>
+          </div>
+          <Reveal className="col-span-12 mt-8 lg:col-span-4 lg:col-start-9 lg:mt-0 lg:self-end" delay={0.2}>
+            <p className="max-w-[46ch] text-lead text-fg-muted">{offer.lead}</p>
+          </Reveal>
+        </header>
+
+        <Reveal className="mt-16 lg:mt-24" y={40} amount={0.15}>
+          <FeaturedOffer />
+        </Reveal>
+
+        <QuoteList className="mt-24 sm:mt-28 lg:mt-36" />
+
+        <Reveal className="mt-20 lg:mt-28" amount={0.6}>
+          <Brands label={offer.brandsLabel} brands={site.brands} className="border-t border-line pt-8" />
+        </Reveal>
+        <ProductBanner />
+      </Container>
+    </section>
+  );
+}
+
+/* ── Das Angebot: Lackpaneel ──────────────────────────────────────────────── */
+
+function FeaturedOffer() {
+  const f = offer.featured;
+
+  return (
+    <LacquerPanel labelledBy="preise-angebot-title" className="grid border border-white/10 lg:grid-cols-12">
+      {/* Oberkante fängt das Deckenlicht, kaltes Raumlicht fällt von oben ein */}
+      <span
+        aria-hidden
+        className={cn(
+          'pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-[linear-gradient(90deg,transparent,rgb(255_255_255/0.38)_22%,rgb(255_255_255/0.12)_62%,transparent)]',
+          styles.ambient,
+        )}
+      />
+      <span
+        aria-hidden
+        className={cn(
+          'pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(70%_55%_at_30%_0%,rgb(132_208_250/0.09),transparent_72%)]',
+          styles.ambient,
+        )}
+      />
+
+      {/* Bühne: Name, Badge, Preis */}
+      <div className="relative flex flex-col p-6 sm:p-10 lg:col-span-7 xl:p-14">
+        <StudioStrips className="absolute inset-0 -z-10 lg:right-[-71.43%]" />
+        {/* Zum Boden hin liegt der Lack im Schatten – die Beschreibung steht ruhig, ohne Reflexe dahinter */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[38%] bg-[linear-gradient(0deg,var(--color-ink-950)_22%,rgb(3_5_15/0.72)_58%,transparent)]"
+        />
+
+        {/* Mobil steht das Badge über dem Namen – so bricht „Innen & Außen“ nicht um */}
+        <header className="flex flex-col-reverse items-start gap-4 sm:flex-row sm:justify-between sm:gap-6">
+          <h3 id="preise-angebot-title">
+            <span className="sr-only">{f.name}</span>
+            <span aria-hidden>
+              <TwoTone top={f.banner.top} bottom={f.banner.bottom} size="md" />
+            </span>
+          </h3>
+          <span className="inline-flex shrink-0 items-center rounded-full bg-signal py-1.5 pr-2.5 pl-3 text-[0.6875rem] leading-none font-semibold tracking-[0.18em] text-white uppercase font-expanded">
+            {f.badge}
+          </span>
+        </header>
+
+        <StudioPrice prefix={f.prefix} price={f.price} className="mt-16 sm:mt-20 lg:mt-24" />
+
+        <p className="mt-auto max-w-[44ch] pt-6 text-[1.0625rem] leading-relaxed text-pretty text-fg-muted">{f.description}</p>
+      </div>
+
+      {/* Datenblatt: Leistungsumfang, Termin – die Reflexe laufen nur noch gedämpft darunter weiter */}
+      <div className="relative flex flex-col border-t border-white/10 bg-ink-950/85 p-6 sm:p-10 lg:col-span-5 lg:border-t-0 lg:border-l xl:p-14">
+        <p className="flex items-center justify-between gap-4 text-eyebrow font-medium text-fg-subtle uppercase font-expanded">
+          {f.includesTitle}
+          <span className="font-mono tracking-normal text-sky-400 tabular">{String(f.includes.length).padStart(2, '0')}</span>
+        </p>
+        <ol className="mt-6 border-t border-white/10">
+          {f.includes.map((item, i) => (
+            <li key={item} className="flex items-center gap-4 border-b border-white/10 py-4 text-[0.9375rem] leading-snug text-fg/90">
+              <span className="w-6 shrink-0 font-mono text-[0.6875rem] text-fg-subtle tabular">{String(i + 1).padStart(2, '0')}</span>
+              <span className="flex-1">{item}</span>
+              <Check aria-hidden className="size-4 shrink-0 text-sky-400" />
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-auto flex flex-col gap-5 pt-10">
+          <ServiceRequestLink service={f.service} variant="white" size="lg" className="w-full">
+            {f.cta}
+          </ServiceRequestLink>
+          <p className="text-sm leading-relaxed text-fg-subtle">{f.note}</p>
+        </div>
+      </div>
+    </LacquerPanel>
+  );
+}

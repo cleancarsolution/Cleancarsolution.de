@@ -1,0 +1,109 @@
+/*
+ * PKW-Schmiede-Logo in Bewegung.
+ * Auftakt (bei data-active="true"): das Zahnrad dreht sich ein, die Trennlinie wächst aus der Mitte,
+ * Kopf & Ring, „PKW“, „Schmiede“ und der Claim folgen gestaffelt. Danach läuft das Zahnrad langsam weiter.
+ * Ist das Logo inaktiv (Menü geschlossen), springt alles ohne Übergang zurück – beim nächsten Öffnen läuft
+ * der Auftakt erneut.
+ * Koordinaten in Logo-Einheiten (transform-box: view-box).
+ */
+
+.part {
+  transform-box: view-box;
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 1.3s var(--ease-out-expo);
+}
+
+.root[data-active='false'] .part {
+  opacity: 0;
+  transition: none;
+}
+
+/* Zahnrad: Auftakt (äußere Gruppe) + Dauerdrehung bzw. Zahn-Schritt (innere Gruppe) um denselben Drehpunkt */
+.gearIn,
+.gearSpin,
+.gearStep {
+  transform-origin: 38.6px 48.7px;
+  transform-box: view-box;
+}
+
+.root[data-active='false'] .gearIn {
+  transform: rotate(-135deg);
+}
+
+.gearSpin {
+  animation: gear-spin 28s linear infinite;
+}
+
+.root[data-active='false'] .gearSpin {
+  animation-play-state: paused;
+}
+
+/* Ohne Dauerdrehung: beim Überfahren/Fokussieren der Partner-Karte rückt das Zahnrad einen Zahn weiter (8 Zähne → 45°) */
+.gearStep {
+  transition: transform 0.9s var(--ease-out-expo);
+}
+
+:global([data-partner-card]:hover) .gearStep,
+:global([data-partner-card]:has(a:focus-visible)) .gearStep {
+  transform: rotate(45deg);
+}
+
+.divider {
+  transform-origin: 40.8px 48.9px;
+  transition-delay: 0.08s;
+}
+
+.root[data-active='false'] .divider {
+  transform: scaleY(0);
+}
+
+.emblem {
+  transform-origin: 61px 48.9px;
+  transition-delay: 0.2s;
+}
+
+.root[data-active='false'] .emblem {
+  transform: scale(0.86);
+}
+
+.pkw {
+  transition-delay: 0.3s;
+}
+
+.schmiede {
+  transition-delay: 0.38s;
+}
+
+.claim {
+  transition-delay: 0.48s;
+}
+
+.root[data-active='false'] .pkw,
+.root[data-active='false'] .schmiede,
+.root[data-active='false'] .claim {
+  transform: translateX(-7px);
+}
+
+@keyframes gear-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .part {
+    transition: none;
+  }
+
+  .gearSpin {
+    animation: none;
+  }
+
+  .gearStep,
+  :global([data-partner-card]:hover) .gearStep,
+  :global([data-partner-card]:has(a:focus-visible)) .gearStep {
+    transform: none;
+    transition: none;
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "@ccs/tsconfig/base.json",
+  "compilerOptions": {
+    "verbatimModuleSyntax": true
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@ccs/tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Gemeinsame TypeScript-Konfigurationen für alle Workspaces",
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "node.json"
+  ]
+}
