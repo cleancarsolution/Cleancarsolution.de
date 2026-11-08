@@ -1,0 +1,55 @@
+/*
+ * Gesamtnote als Lichtleiste: Die Sterne liegen im Dunkel (Haarlinien-Ton) und schalten sich nacheinander ein –
+ * im Takt der LED-Leisten der Preis-Sektion (studio.module.css): kurz heller Einschalt-Glanz, dann Sterngelb.
+ * Bruchteile leuchten anteilig (--fill 0 … 1, z. B. 4,7 → letzter Stern zu 70 %).
+ *
+ * Auslöser: [data-lit='true'] (RatingLights, einmalig beim Hineinscrollen).
+ * Animiert werden ausschließlich opacity und filter.
+ * „Bewegung reduzieren“: Sterne leuchten sofort, ohne Glanz.
+ */
+
+.star {
+  display: inline-grid;
+}
+
+.star > svg {
+  grid-area: 1 / 1;
+}
+
+.off {
+  color: var(--color-line-strong);
+}
+
+.on {
+  color: var(--color-star);
+  clip-path: inset(0 calc((1 - var(--fill, 1)) * 100%) 0 0);
+  opacity: 0;
+}
+
+.lights[data-lit='true'] .on {
+  animation: switch-on 0.9s var(--ease-out-quint) both;
+  animation-delay: calc(0.25s + var(--i, 0) * 0.14s);
+}
+
+@keyframes switch-on {
+  0% {
+    opacity: 0;
+    filter: brightness(1);
+  }
+  35% {
+    opacity: 1;
+    filter: brightness(1.9);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lights .on,
+  .lights[data-lit='true'] .on {
+    animation: none;
+    opacity: 1;
+  }
+}

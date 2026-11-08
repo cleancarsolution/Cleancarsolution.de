@@ -3,7 +3,7 @@ import type { ServiceSlug } from '@ccs/shared';
 /**
  * Sektions-Anker der Startseite (Vertrag zwischen Navigation und Sektionen):
  * #top · #ueber-uns · #leistungen (+ je Leistung #<slug>) · #hygiene · #preise
- * #einblick · #ablauf · #faq · #kontakt
+ * #einblick · #ablauf · #kundenstimmen · #faq · #kontakt
  */
 export const mainNav = [
   { label: 'Leistungen', href: '/#leistungen', menu: 'services' },

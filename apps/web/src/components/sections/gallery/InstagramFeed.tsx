@@ -1,9 +1,9 @@
 'use client';
 
-import { useReducedMotion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ButtonLink, buttonClasses } from '@/components/ui/Button';
-import { ArrowLeft, ArrowRight, Instagram } from '@/components/ui/icons';
+import { Instagram } from '@/components/ui/icons';
+import { SliderControls, useSnapSlider } from '@/components/ui/SnapSlider';
 import { SmartLink } from '@/components/ui/SmartLink';
 import { gallery } from '@/content/gallery';
 import { legalNav } from '@/content/navigation';
@@ -26,9 +26,6 @@ function postType(url: string): string {
 /** ~1,3 Folien auf dem Smartphone, ~5 ab xl – die angeschnittene nächste Folie zeigt, dass es weitergeht. */
 const SLIDE = 'w-[72%] sm:w-[40%] lg:w-[26%] xl:w-[19.5%]';
 
-const NAV =
-  'grid size-11 cursor-pointer place-items-center rounded-full border border-line-strong text-fg-muted transition-[border-color,color,background-color,opacity] duration-300 hover:border-sky/60 hover:bg-sky/[0.06] hover:text-sky-300 aria-disabled:pointer-events-none aria-disabled:opacity-35';
-
 interface InstagramFeedProps {
   posts: readonly InstagramPost[];
   profile: { href: string; handle: string };
@@ -44,56 +41,8 @@ interface InstagramFeedProps {
  */
 export function InstagramFeed({ posts, profile }: InstagramFeedProps) {
   const feed = gallery.feed;
-  const reduce = useReducedMotion();
-  const trackRef = useRef<HTMLUListElement>(null);
-  const thumbRef = useRef<HTMLDivElement>(null);
+  const { trackRef, thumbRef, atStart, atEnd, step } = useSnapSlider();
   const [consent, setConsent] = useState(false);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-
-  /* Fortschrittslinie und Pfeil-Knöpfe folgen dem Wischen – Breite und Lage der Linie direkt ins DOM, per rAF */
-  useEffect(() => {
-    const track = trackRef.current;
-    const thumb = thumbRef.current;
-    if (!track || !thumb) return;
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const { scrollLeft, scrollWidth, clientWidth } = track;
-      thumb.style.width = `${(clientWidth / scrollWidth) * 100}%`;
-      thumb.style.transform = `translateX(${(scrollLeft / clientWidth) * 100}%)`;
-      setAtStart(scrollLeft < 2);
-      setAtEnd(scrollLeft > scrollWidth - clientWidth - 2);
-    };
-    const schedule = () => {
-      if (!frame) frame = window.requestAnimationFrame(update);
-    };
-    schedule();
-    track.addEventListener('scroll', schedule, { passive: true });
-    const observer = new ResizeObserver(schedule);
-    observer.observe(track);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      track.removeEventListener('scroll', schedule);
-      observer.disconnect();
-    };
-  }, []);
-
-  /** Eine Folie weiter bzw. zurück – rastet an ihrer Vorderkante ein. */
-  const step = (direction: 1 | -1) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const slides = Array.from(track.children) as HTMLElement[];
-    const current = track.scrollLeft;
-    const target =
-      direction > 0
-        ? slides.find((slide) => slide.offsetLeft > current + 2)
-        : slides.findLast((slide) => slide.offsetLeft < current - 2);
-    track.scrollTo({
-      left: target?.offsetLeft ?? (direction > 0 ? track.scrollWidth : 0),
-      behavior: reduce ? 'auto' : 'smooth',
-    });
-  };
 
   const load = () => {
     setConsent(true);
@@ -168,19 +117,14 @@ export function InstagramFeed({ posts, profile }: InstagramFeedProps) {
         </div>
       )}
 
-      <div className="mt-6 flex items-center gap-6 sm:mt-8">
-        <div aria-hidden className="h-px flex-1 overflow-hidden bg-line">
-          <div ref={thumbRef} className="h-full w-0 bg-gradient-to-r from-sky to-royal-400" />
-        </div>
-        <div className="flex gap-3">
-          <button type="button" onClick={() => step(-1)} aria-disabled={atStart} aria-label={feed.controls.prev} className={NAV}>
-            <ArrowLeft aria-hidden className="size-4" />
-          </button>
-          <button type="button" onClick={() => step(1)} aria-disabled={atEnd} aria-label={feed.controls.next} className={NAV}>
-            <ArrowRight aria-hidden className="size-4" />
-          </button>
-        </div>
-      </div>
+      <SliderControls
+        thumbRef={thumbRef}
+        atStart={atStart}
+        atEnd={atEnd}
+        onStep={step}
+        labels={feed.controls}
+        className="mt-6 sm:mt-8"
+      />
     </div>
   );
 }

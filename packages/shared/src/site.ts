@@ -23,6 +23,15 @@ export const site = {
   /** Link für „Route planen“ – bewusst ohne eingebettete Karte (DSGVO). */
   mapsUrl:
     'https://www.google.com/maps/search/?api=1&query=Himmelgeister%20Str.%2035%2C%2040225%20D%C3%BCsseldorf',
+  /**
+   * Google-Unternehmensprofil (Sektion Kundenstimmen): Eintrag in Google Maps (Place-ID) mit allen Rezensionen
+   * bzw. der Link aus „Rezensionen einholen“ zum Schreiben einer Rezension.
+   */
+  reviews: {
+    readUrl:
+      'https://www.google.com/maps/search/?api=1&query=Clean%20Car%20Solution&query_place_id=ChIJnTvfWPjLuEcRhg6rP6lgey8',
+    writeUrl: 'https://g.page/r/CYYOqz-pYHsvEBM/review',
+  },
   phones: [
     { label: 'Mobil', display: '0176 24024079', href: 'tel:+4917624024079', e164: '+4917624024079' },
   ],

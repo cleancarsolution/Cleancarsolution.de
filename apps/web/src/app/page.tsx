@@ -7,12 +7,16 @@ import { Hygiene } from '@/components/sections/Hygiene';
 import { Marquee } from '@/components/sections/Marquee';
 import { Offer } from '@/components/sections/Offer';
 import { Process } from '@/components/sections/Process';
+import { Reviews } from '@/components/sections/Reviews';
 import { Services } from '@/components/sections/Services';
+
+/** Höchstens alle 6 Stunden neu erzeugen – im selben Takt holt `lib/google-reviews.ts` die Google-Rezensionen. */
+export const revalidate = 21600;
 
 /**
  * Startseite – Reihenfolge & Rhythmus (dunkel/hell) siehe docs/DESIGN.md.
  * Hero (Video) → Marquee → Über uns → Leistungen → Hygiene (hell) → Preise (schwarz)
- * → Einblick → Ablauf → FAQ (hell) → Kontakt
+ * → Einblick → Ablauf → Kundenstimmen → FAQ (hell) → Kontakt
  */
 export default function HomePage() {
   return (
@@ -25,6 +29,7 @@ export default function HomePage() {
       <Offer />
       <Gallery />
       <Process />
+      <Reviews />
       <Faq />
       <Contact />
     </>

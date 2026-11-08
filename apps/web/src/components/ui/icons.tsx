@@ -162,6 +162,16 @@ export const Leaf = (p: IconProps) => (
   </Stroke>
 );
 
+/** Bewertungsstern, gefüllt – die runden Ecken kommen vom Strich. */
+export const Star = (p: IconProps) => (
+  <Stroke {...p}>
+    <path
+      d="M12 2.7 14.53 9.42 21.7 9.75 16.09 14.23 18 21.15 12 17.2 6 21.15 7.91 14.23 2.3 9.75 9.47 9.42Z"
+      fill="currentColor"
+    />
+  </Stroke>
+);
+
 export const Instagram = (p: IconProps) => (
   <Stroke {...p}>
     <rect x="3.5" y="3.5" width="17" height="17" rx="5" />

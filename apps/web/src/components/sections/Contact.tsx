@@ -21,7 +21,7 @@ function splitAccent(title: string, accent: string): [string, string] {
 }
 
 /**
- * 08 — KONTAKT. Links der direkte Draht wie ein Datenblatt, rechts die Terminanfrage.
+ * 09 — KONTAKT. Links der direkte Draht wie ein Datenblatt, rechts die Terminanfrage.
  * Licht fällt „motiviert“ von rechts hinter die Formularkarte.
  */
 export function Contact() {
@@ -33,7 +33,7 @@ export function Contact() {
       <Container>
         <div className="grid gap-y-16 lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-5">
-            <Eyebrow index="08">{contact.eyebrow}</Eyebrow>
+            <Eyebrow index="09">{contact.eyebrow}</Eyebrow>
             <h2 id="kontakt-title" className="mt-6 text-display-lg font-medium text-balance">
               <RevealText text={lead} />
               {accent ? (

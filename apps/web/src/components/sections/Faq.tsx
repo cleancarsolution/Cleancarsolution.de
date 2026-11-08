@@ -54,7 +54,7 @@ function QuickLink({ href, icon, label, value }: { href: string; icon: ReactNode
 }
 
 /**
- * 07 — FAQ (helle Fläche). Links die Headline (auf Desktop sticky) mit direktem Draht,
+ * 08 — FAQ (helle Fläche). Links die Headline (auf Desktop sticky) mit direktem Draht,
  * rechts das Akkordeon. Die erste Frage ist geöffnet.
  */
 export function Faq() {
@@ -64,7 +64,7 @@ export function Faq() {
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-5 xl:col-span-4">
             <div className="lg:sticky lg:top-32">
-              <Eyebrow index="07" tone="navy">
+              <Eyebrow index="08" tone="navy">
                 {faq.eyebrow}
               </Eyebrow>
               <h2 id="faq-title" className="mt-6 text-display-lg font-medium text-balance text-navy">

@@ -28,6 +28,7 @@ Exakt aus den drei Logo-Ebenen gemessen:
 | `royal`  | `#0048CE` | Primär-Aktion (Buttons), Verlaufsmitte, aktive Zustände               |
 | `sky`    | `#26ABF6` | Licht/Akzent: Eyebrows, Hervorhebungen, Fokus, feine Linien           |
 | `signal` | `#E4202B` | **Nur** das Preis-/Angebots-Badge („ab 89 €“) – max. 1–2× pro Seite   |
+| `star`   | `#FBBC04` | **Nur** Bewertungssterne (Kundenstimmen) – Gelb wie bei Google        |
 | `ink-*`  | `#03050F`… | Seitenhintergründe & Flächen, navy-getönt, nie reines Schwarz        |
 | `paper`  | `#F3F5F9` | Helle Sektionen (Hygiene, FAQ) mit `navy`/`paper-ink` Text            |
 
@@ -94,10 +95,12 @@ Regeln:
 | `Sparkle`      | Vierzackiger Funkel-Stern aus dem Logo – Mikro-Ornament                |
 | `icons`        | Linien-Icons 1,5 px (inkl. Instagram/TikTok)                           |
 | `MarqueeTrack` | Laufband-Spur, bremst beim Überfahren weich ab (Leistungs-Laufband) |
+| `SnapSlider`   | `useSnapSlider` + `SliderControls`: waagrechter Slider mit Einrasten, Fortschrittslinie (Sky → Royal) und Pfeil-Knöpfen – Einblick und Kundenstimmen |
 | `brand/Logo`   | `variant="color"` (Originalfarben wie beim Kunden – nur auf Hell) / `"light"` (weißes Auto, auf Navy) / `"blue"` (blaues Auto auf Dunkel), `showWordmark`. `data-part` je Pfad für CSS-Animationen |
 | `brand/logo-files` | Die Logo-Dateien des Kunden in der Hell-Fassung, transparent und frei auf dem dunklen Grund: Header auf dem Smartphone nur Auto und Wellen, ab sm Auto und Schriftzug nebeneinander, Footer untereinander |
 | `media/*`      | Schleifen-Videos im Seitenfluss: `useLoopVideo` (lädt kurz vor Sichtbarkeit, spielt nur sichtbar, respektiert „Bewegung reduzieren“/Datensparmodus), `LoopVideoMedia` (Poster + Video), `VideoPoster` (Art Direction, Standbild bei reduzierter Bewegung), `VideoToggle` (Pause/Play mit Fortschrittsring) |
 | `partner/*`    | Inhouse-Partner PKW-Schmiede als ruhige Empfehlung, nie als Werbefläche: schwarze Karten mit Haarlinie, ohne Schein. `PartnerEndorsement` (Footer: Logo · Nutzen + Leistungen · Weg zur Website, ganze Karte klickbar), `PartnerPromo` (Mega-Dropdown, kompakt im Mobile-Menü), `PartnerLogoAnimated` (Zahnrad dreht sich ein; `spin={false}` = steht still und rückt beim Überfahren der Karte einen Zahn weiter); Texte in `content/partner.ts` |
+| `reviews/*`    | Kundenstimmen: `RatingLights` (Sterne der Gesamtnote, schalten sich beim Hineinscrollen nacheinander ein; Bruchteile leuchten anteilig), `ReviewSlider` (Rezensionen im `SnapSlider`) |
 | `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioStrips` (Reflexe der LED-Deckenleisten), `StudioPrice` (Chrom-Ziffern mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
 
 Hilfen: `lib/scroll.ts` (Lenis, `scrollToId`, `lockScroll`), `lib/events.ts` (`requestService(slug)` wählt im
@@ -149,8 +152,9 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
 | 6 | Preise         | `#preise` (+ `#produkte`) | **schwarz (ink-950)** | `content/offer.ts` · `offer/ProductBanner` (eigene Produkte, Inhalt vom Kunden) |
 | 7 | Einblick       | `#einblick`  | ink-950         | `content/gallery.ts` (`feed.posts`: Reels im Slider – Vorschau von Instagram nach Klick (Zwei-Klick-Lösung), ein Klick auf die Kachel führt zu Instagram) |
 | 8 | Ablauf         | `#ablauf`    | ink-900         | `content/process.ts`                   |
-| 9 | FAQ            | `#faq`       | **paper (hell)**| `content/faq.ts`                       |
-| 10| Kontakt        | `#kontakt`   | ink-950         | `content/contact.ts` + `site`          |
+| 9 | Kundenstimmen  | `#kundenstimmen` | ink-950     | `content/reviews.ts` · Google-Rezensionen aus `lib/google-reviews.ts` (Business Profile API, alle 6 h neu), Links in `site.reviews` |
+| 10| FAQ            | `#faq`       | **paper (hell)**| `content/faq.ts`                       |
+| 11| Kontakt        | `#kontakt`   | ink-950         | `content/contact.ts` + `site`          |
 
 Header (fixiert, Logo, Mega-Dropdown „Leistungen“ mit Video-Bühne) und Footer kommen aus
 `components/layout/`. Beide bewerben den Inhouse-Partner PKW-Schmiede (Logo für dunkle Flächen:
@@ -166,6 +170,11 @@ Die eine Idee je Sektion (Auswahl):
   sich die LED-Deckenleisten nacheinander ein, ihre Reflexe laufen schräg über den Lack und wandern mit dem
   Zeiger; die Chrom-Ziffern fangen ein Glanzlicht und spiegeln sich im Boden. Darunter die übrigen Leistungen
   als ruhige Preisliste, dann Produktmarken und der Platz für die eigenen Produkte.
+- **Kundenstimmen:** Die Gesamtnote aus dem Google-Profil als Lichtleiste – beim Hineinscrollen schalten sich die
+  fünf Sterne nacheinander ein (kurzer Einschalt-Glanz, dann Sterngelb wie bei Google), im Takt der LED-Leisten.
+  Darunter bis zu zehn der neuesten Rezensionen mit Text im Slider zwischen Haarlinien (wie im Einblick), Name
+  gekürzt („Max M.“), Originalwortlaut; am Ende der Hinweis nach § 5b Abs. 3 UWG und die Wege zu Google.
+  Ohne Daten nur Überschrift und Links.
 - **Footer:** „Unter einem Dach“ – Marke mit direkten Wegen (Termin, Anrufen, Schreiben), der Inhouse-Partner
   als Empfehlungs-Karte, Linkspalten; Finale: „CLEAN CAR“ aus schwarzem Lack auf der Bodenlinie, Studiolicht
   gleitet einmal darüber. Ganz unten Rechtliches und „Erstellt mit Next.js & Turbopack von Palmer Digital“.

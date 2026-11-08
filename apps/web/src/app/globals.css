@@ -17,6 +17,8 @@
   --color-sky: #26abf6;
   /* Signalrot – NUR für das Preis-/Angebots-Badge (vom Banner übernommen) */
   --color-signal: #e4202b;
+  /* Sterngelb – NUR für Bewertungssterne (Kundenstimmen), wie bei Google */
+  --color-star: #fbbc04;
 
   /* Navy-Skala */
   --color-navy-950: #00042a;

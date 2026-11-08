@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 
 /**
  * Datenschutzerklärung – Text vom Kunden (bisherige Seite „Rechtliches“), ergänzt um Hosting (Vercel),
- * Kontaktformular (Resend, STRATO), Instagram-Zwei-Klick-Lösung und Beschwerderecht; Facebook entfernt (nicht eingebunden).
+ * Kontaktformular (Resend, STRATO), Instagram-Zwei-Klick-Lösung, Google-Rezensionen und Beschwerderecht; Facebook
+ * entfernt (nicht eingebunden).
  */
 export default function DatenschutzPage() {
   return (
@@ -659,7 +660,34 @@ export default function DatenschutzPage() {
         abgerufen werden.
       </p>
 
-      <h2>11. Rechtsgrundlage der Verarbeitung</h2>
+      <h2>11. Google-Rezensionen</h2>
+      <p>
+        Auf unserer Startseite zeigen wir die Gesamtbewertung und die neuesten Rezensionen aus
+        unserem Unternehmensprofil bei Google. Anbieter ist die Google Ireland Limited, Gordon
+        House, Barrow Street, Dublin 4, Irland (im Folgenden „Google“). Die Rezensionen ruft unser
+        Server über die Schnittstelle des Unternehmensprofils bei Google ab – höchstens alle sechs
+        Stunden – und hält sie bis zum nächsten Abruf vor. Ihr Browser stellt dabei keine Verbindung
+        zu Google her; beim Besuch unserer Internetseite werden keine Daten von Ihnen an Google
+        übermittelt.
+      </p>
+      <p>
+        Verarbeitet werden Angaben, die die Verfasser der Rezensionen bei Google öffentlich gemacht
+        haben: der Name, den wir auf den Vornamen und den ersten Buchstaben des Nachnamens kürzen,
+        die Sternebewertung, der Text und das Datum der Rezension. Profilbilder übernehmen wir
+        nicht. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DS-GVO; unser berechtigtes Interesse liegt
+        darin, Interessenten einen Eindruck von den Erfahrungen unserer Kunden zu geben. Wird eine
+        Rezension bei Google geändert oder gelöscht, übernehmen wir das mit dem nächsten Abruf.
+      </p>
+      <p>
+        Über die Schaltflächen „Alle Rezensionen lesen“ und „Rezension schreiben“ gelangen Sie zu
+        Google; dort gelten die Datenschutzbestimmungen von Google, abrufbar unter{' '}
+        <SmartLink href="https://policies.google.com/privacy">
+          https://policies.google.com/privacy
+        </SmartLink>
+        .
+      </p>
+
+      <h2>12. Rechtsgrundlage der Verarbeitung</h2>
       <p>
         Art. 6 I lit. a DS-GVO dient unserem Unternehmen als Rechtsgrundlage für
         Verarbeitungsvorgänge, bei denen wir eine Einwilligung für einen bestimmten
@@ -690,7 +718,7 @@ export default function DatenschutzPage() {
       </p>
 
       <h2>
-        12. Berechtigte Interessen an der Verarbeitung, die von dem Verantwortlichen oder einem
+        13. Berechtigte Interessen an der Verarbeitung, die von dem Verantwortlichen oder einem
         Dritten verfolgt werden
       </h2>
       <p>
@@ -699,7 +727,7 @@ export default function DatenschutzPage() {
         Wohlergehens all unserer Mitarbeiter und unserer Anteilseigner.
       </p>
 
-      <h2>13. Dauer, für die die personenbezogenen Daten gespeichert werden</h2>
+      <h2>14. Dauer, für die die personenbezogenen Daten gespeichert werden</h2>
       <p>
         Das Kriterium für die Dauer der Speicherung von personenbezogenen Daten ist die jeweilige
         gesetzliche Aufbewahrungsfrist. Nach Ablauf der Frist werden die entsprechenden Daten
@@ -708,7 +736,7 @@ export default function DatenschutzPage() {
       </p>
 
       <h2>
-        14. Gesetzliche oder vertragliche Vorschriften zur Bereitstellung der personenbezogenen
+        15. Gesetzliche oder vertragliche Vorschriften zur Bereitstellung der personenbezogenen
         Daten; Erforderlichkeit für den Vertragsabschluss; Verpflichtung der betroffenen Person, die
         personenbezogenen Daten bereitzustellen; mögliche Folgen der Nichtbereitstellung
       </h2>
@@ -730,7 +758,7 @@ export default function DatenschutzPage() {
         hätte.
       </p>
 
-      <h2>15. Bestehen einer automatisierten Entscheidungsfindung</h2>
+      <h2>16. Bestehen einer automatisierten Entscheidungsfindung</h2>
       <p>
         Als verantwortungsbewusstes Unternehmen verzichten wir auf eine automatische
         Entscheidungsfindung oder ein Profiling.
