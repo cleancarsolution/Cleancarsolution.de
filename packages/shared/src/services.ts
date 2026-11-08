@@ -1,5 +1,5 @@
 /**
- * Leistungskatalog – genutzt von Header-Dropdown, Leistungs-Sektion, Footer, Kontaktformular und API.
+ * Leistungskatalog – genutzt von Header-Dropdown, Leistungs-Sektion, Footer und Kontaktformular.
  *
  * `eyebrow` + `title` spiegeln die zweizeilige Typografie der Banner wider
  * (obere Zeile in Sky-Blau, untere Zeile in Weiß), z. B. „POLSTER & LEDER / REINIGUNG“.

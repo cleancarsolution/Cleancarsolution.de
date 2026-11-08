@@ -1,15 +1,14 @@
 # Clean Car Solution – Website
 
 Monorepo für die neue Website von **Clean Car Solution** – _Professional Car Care_ aus Düsseldorf.
-Frontend und Backend sind strikt getrennt und teilen sich nur einen typisierten Vertrag (`@ccs/shared`).
+Gehostet auf Vercel; das Kontaktformular verschickt Anfragen per Resend an das Postfach des Betriebs.
 
 ```
 .
 ├── apps/
-│   ├── web/        Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · motion · Lenis
-│   └── api/        Fastify 5 · Zod · Nodemailer – Terminanfragen & Leistungs-API
+│   └── web/        Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · motion · Lenis
 ├── packages/
-│   ├── shared/     @ccs/shared – Firmendaten, Leistungskatalog, Zod-Schemas, API-Typen
+│   ├── shared/     @ccs/shared – Firmendaten, Leistungskatalog, Zod-Schemas, E-Mail-Vorlage, Antwort-Typen
 │   └── tsconfig/   @ccs/tsconfig – gemeinsame TypeScript-Konfigurationen
 ├── docs/
 │   └── DESIGN.md   Design-System & Gestaltungsregeln (verbindlich)
@@ -27,29 +26,26 @@ Frontend und Backend sind strikt getrennt und teilen sich nur einen typisierten 
 ```bash
 npm install
 
-# Umgebungsvariablen anlegen
+# Umgebungsvariablen anlegen (Resend-Key usw., siehe Datei)
 cp apps/web/.env.example apps/web/.env.local
-cp apps/api/.env.example apps/api/.env
 
-# Web (http://localhost:3000) + API (http://localhost:4000) gleichzeitig
+# Website (http://localhost:3000)
 npm run dev
 ```
 
-> Ist Port 3000 belegt, weicht Next.js automatisch auf den nächsten freien Port aus. Die API erlaubt im
-> Entwicklungsmodus Anfragen von jedem `localhost`-Port.
+> Ist Port 3000 belegt, weicht Next.js automatisch auf den nächsten freien Port aus. Ohne `RESEND_API_KEY`
+> werden Formular-Anfragen lokal nur protokolliert, nicht versendet.
 
 ## Skripte (im Root ausführen)
 
 | Befehl              | Beschreibung                                         |
 | ------------------- | ---------------------------------------------------- |
-| `npm run dev`       | Web + API im Watch-Modus (Turborepo)                 |
-| `npm run dev:web`   | nur Frontend                                         |
-| `npm run dev:api`   | nur Backend                                          |
-| `npm run build`     | Produktions-Build aller Workspaces                   |
+| `npm run dev`       | Website im Watch-Modus (Turborepo)                   |
+| `npm run dev:web`   | nur die Website (wie `dev`)                          |
+| `npm run build`     | Produktions-Build                                    |
 | `npm run start`     | Produktionsserver (nach `build`)                     |
 | `npm run typecheck` | TypeScript-Prüfung aller Workspaces                  |
 | `npm run lint`      | ESLint                                               |
-| `npm run test`      | Tests (API: Vitest)                                  |
 | `npm run format`    | Prettier (inkl. Tailwind-Klassen-Sortierung)         |
 
 ## Architektur
@@ -63,7 +59,7 @@ apps/web ◀──────── @ccs/shared (site · services · inquirySch
 
 - **Single Source of Truth:** Firmendaten (`packages/shared/src/site.ts`) und Leistungen
   (`packages/shared/src/services.ts`) speisen Header-Dropdown, Leistungs-Sektion, Footer, Formular,
-  JSON-LD (Local SEO) und die API.
+  JSON-LD (Local SEO) und die E-Mail-Benachrichtigung.
 - **Ein Schema, zwei Seiten:** `inquirySchema` (Zod) validiert die Terminanfrage identisch im Browser und
   auf dem Server – Fehlermeldungen sind deutschsprachig.
 - **Frontend:** Server Components als Standard, Client Components nur für Interaktion (Menüs, Video,
@@ -71,8 +67,6 @@ apps/web ◀──────── @ccs/shared (site · services · inquirySch
   „Bewegung reduzieren“.
 - **Formular-Versand:** Route Handler `apps/web/src/app/api/inquiries` – Honeypot, Rate-Limit, gleiche
   Validierung, E-Mail per [Resend](https://resend.com) an `MAIL_TO` (Reply-To = Kunde). Gespeichert wird nichts.
-- **Backend (optional):** Die Fastify-API (`apps/api`, SMTP + JSONL) wird von der Website nicht mehr genutzt.
-  Details: [`apps/api/README.md`](apps/api/README.md).
 
 ## Inhalte pflegen
 
@@ -190,6 +184,5 @@ auf dem dunklen Grund, in der Hell-Fassung (`LOGO_PALETTE.light`): Navy `#010D61
 - **Web (Vercel):** Root Directory `apps/web` (im Dashboard), alles Weitere steht in `apps/web/vercel.json`
   (Turborepo-Build, Region Frankfurt). Variablen: `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`
   (siehe `apps/web/.env.example`). Alte WordPress-Adressen leiten per `redirects()` in `apps/web/next.config.ts` weiter.
-- **API (optional, für die Website nicht nötig):** Docker (`apps/api/Dockerfile`) oder Node – `npm run build -w @ccs/api` und
-  `npm run start -w @ccs/api`. Variablen siehe `apps/api/.env.example`; `DATA_DIR` auf ein persistentes
-  Volume legen.
+- **Domain:** DNS bleibt bei Strato (Postfach, MX und Resend-Einträge unverändert). Für die Website zeigt der
+  A-Record auf Vercel, einen AAAA-Record (IPv6) gibt es nicht.

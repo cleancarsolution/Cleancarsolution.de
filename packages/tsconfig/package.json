@@ -5,7 +5,6 @@
   "description": "Gemeinsame TypeScript-Konfigurationen für alle Workspaces",
   "files": [
     "base.json",
-    "nextjs.json",
-    "node.json"
+    "nextjs.json"
   ]
 }

@@ -2,7 +2,7 @@
   "name": "@ccs/shared",
   "version": "0.1.0",
   "private": true,
-  "description": "Gemeinsame Daten, Typen und Validierungsschemas für Web & API",
+  "description": "Gemeinsame Daten, Typen und Validierungsschemas für die Website",
   "type": "module",
   "sideEffects": false,
   "exports": {

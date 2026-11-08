@@ -1,12 +1,6 @@
 import type { InquiryFieldErrors } from './inquiry';
 
-/** Routen der API (apps/api) – vom Frontend-Client genutzt. */
-export const API_ROUTES = {
-  health: '/health',
-  services: '/v1/services',
-  inquiries: '/v1/inquiries',
-} as const;
-
+/** Antworten der Formular-Route `POST /api/inquiries` (apps/web) – vom Browser-Client ausgewertet. */
 export interface InquirySuccessResponse {
   ok: true;
   id: string;

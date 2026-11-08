@@ -1,4 +1,0 @@
-{
-  "extends": "@ccs/tsconfig/node.json",
-  "include": ["src", "test", "tsup.config.ts", "vitest.config.ts"]
-}

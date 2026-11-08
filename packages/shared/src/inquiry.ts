@@ -18,7 +18,7 @@ const optionalText = (max: number) =>
 
 /**
  * Terminanfrage / Kontaktanfrage.
- * Wird im Frontend (Client-Validierung) und in der API (Server-Validierung) identisch verwendet.
+ * Wird im Frontend (Client-Validierung) und in der Formular-Route (Server-Validierung) identisch verwendet.
  */
 export const inquirySchema = z.object({
   name: z

@@ -12,7 +12,7 @@ import {
 
 /**
  * Terminanfrage → E-Mail an den Betrieb über Resend (auf Vercel eine Function in fra1).
- * Antwortet wie zuvor die API (apps/api): 201 · 400 · 413 · 422 · 429 · 500 – `lib/api.ts` versteht alle.
+ * Antworten: 201 · 400 · 413 · 422 · 429 · 500 – `lib/api.ts` versteht alle.
  * Gespeichert wird nichts: Die E-Mail ist der Datensatz, deshalb antwortet die Route erst nach dem Versand.
  */
 

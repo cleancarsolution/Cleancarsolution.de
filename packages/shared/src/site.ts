@@ -1,6 +1,6 @@
 /**
  * Zentrale Firmendaten – Single Source of Truth für Web (Header, Footer, Kontakt, SEO/JSON-LD)
- * und API (E-Mail-Benachrichtigungen).
+ * und Kontaktformular (E-Mail-Benachrichtigungen).
  *
  * Quelle: bestehende Website cleancarsolution.de, Banner & Roll-ups des Kunden.
  * TODO(Kunde): Öffnungszeiten ergänzen.

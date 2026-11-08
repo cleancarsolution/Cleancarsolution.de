@@ -21,7 +21,7 @@ function formatPreferredDate(iso: string | undefined): string {
 const HTML_ESCAPES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => HTML_ESCAPES[char] ?? char);
 
-/** Betreff, Klartext und schlichtes HTML für die Benachrichtigung an den Betrieb (Web: Resend, API: SMTP). */
+/** Betreff, Klartext und schlichtes HTML für die Benachrichtigung an den Betrieb (Versand per Resend). */
 export function buildInquiryEmail(record: InquiryNotification) {
   const service = serviceLabel(record.service);
   const rows: Array<[string, string]> = [
