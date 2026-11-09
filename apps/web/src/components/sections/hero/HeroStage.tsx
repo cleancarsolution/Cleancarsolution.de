@@ -12,6 +12,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
+import { PHONE_QUERY } from '@/components/media/VideoPoster';
 import { cn } from '@/lib/cn';
 import { useMediaPreferences } from '@/lib/media';
 
@@ -71,6 +72,8 @@ export function HeroStage({ id, labelledBy, className, children }: HeroStageProp
   const [inView, setInView] = useState(true);
   const [revealed, setRevealed] = useState(false);
   const [playing, setPlaying] = useState(false);
+  /** Zählt Wechsel Smartphone ↔ breiter – danach hat das Video neu geladen und wird neu synchronisiert. */
+  const [sourceSwaps, setSourceSwaps] = useState(0);
 
   const shouldPlay = wantPlay ?? autoplay;
   const mounted = autoplay || wantPlay !== null;
@@ -86,20 +89,39 @@ export function HeroStage({ id, labelledBy, className, children }: HeroStageProp
     return () => observer.disconnect();
   }, []);
 
-  /* Element mit Absicht & Sichtbarkeit synchronisieren. */
+  /*
+   * Smartphone ↔ breiter (Fenster ziehen, Gerät drehen): `<source media>` wählt nur beim Laden – also neu laden,
+   * damit der passende Film läuft (Handwäsche- bzw. Banner-Film). Bis zum ersten Bild steht das Poster.
+   */
+  useEffect(() => {
+    if (!mounted) return;
+    const query = window.matchMedia(PHONE_QUERY);
+    const onChange = () => {
+      setRevealed(false);
+      setPlaying(false);
+      videoRef.current?.load();
+      setSourceSwaps((count) => count + 1);
+    };
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+  }, [mounted]);
+
+  /* Element mit Absicht & Sichtbarkeit synchronisieren (auch nach dem Neuladen). */
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !mounted) return;
     if (shouldPlay && inView) {
       video.muted = true;
-      video.play().catch(() => {
+      video.play().catch((error: unknown) => {
+        // Unterbrochen (Neuladen, Pause) heißt nicht blockiert.
+        if (error instanceof DOMException && error.name === 'AbortError') return;
         // Autoplay blockiert (z. B. Energiesparmodus) → Button zeigt „abspielen“.
         if (wantPlay === null) setWantPlay(false);
       });
     } else {
       video.pause();
     }
-  }, [mounted, shouldPlay, inView, wantPlay]);
+  }, [mounted, shouldPlay, inView, wantPlay, sourceSwaps]);
 
   const toggle = useCallback(() => setWantPlay(!shouldPlay), [shouldPlay]);
   const onPlaying = useCallback(() => {

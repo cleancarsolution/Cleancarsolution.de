@@ -15,7 +15,7 @@ import { LoopVideoMedia } from '@/components/media/LoopVideoMedia';
 import { useLoopVideo } from '@/components/media/useLoopVideo';
 import { PORTRAIT_QUERY, VideoPoster } from '@/components/media/VideoPoster';
 import { VideoToggle } from '@/components/media/VideoToggle';
-import { mistFilm, videoLabels } from '@/content/media';
+import { steamFilm, videoLabels } from '@/content/media';
 import { cn } from '@/lib/cn';
 
 interface ClearViewProps {
@@ -25,14 +25,14 @@ interface ClearViewProps {
 }
 
 const SIZES = '(min-width: 1440px) 900px, (min-width: 1024px) 64vw, 100vw';
-const SOURCES = [{ src: mistFilm.sources.portrait, media: PORTRAIT_QUERY }, { src: mistFilm.sources.landscape }];
+const SOURCES = [{ src: steamFilm.sources.portrait, media: PORTRAIT_QUERY }, { src: steamFilm.sources.landscape }];
 
 /** Ruhelage der Trennlinie nach dem Auftakt (Prozent von links). */
 const REST = 46;
 const clamp = (value: number) => Math.min(100, Math.max(0, value));
 
 /**
- * „Klarsicht“: das Zeitlupen-Video (Sprühnebel) liegt links hinter Milchglas – beschlagen, matt, kühl –
+ * „Klarsicht“: das Trockendampf-Video liegt links hinter Milchglas – beschlagen, matt, kühl –
  * rechts gestochen klar. Beim Hineinscrollen wischt die Trennlinie das Glas einmal frei wie ein Abzieher;
  * danach lässt sie sich ziehen (Maus/Touch, horizontal) oder per Pfeiltasten verschieben.
  * Ein Video, eine Glasschicht (backdrop-filter) – kein zweites Video, das aus dem Takt laufen könnte.
@@ -132,12 +132,12 @@ export function ClearView({ labels, className }: ClearViewProps) {
         className="object-[62%_50%]"
         poster={
           <VideoPoster
-            alt={mistFilm.alt}
+            alt={steamFilm.alt}
             sizes={SIZES}
-            poster={mistFilm.poster}
-            posterPortrait={mistFilm.posterPortrait}
-            still={mistFilm.still}
-            stillPortrait={mistFilm.stillPortrait}
+            poster={steamFilm.poster}
+            posterPortrait={steamFilm.posterPortrait}
+            still={steamFilm.still}
+            stillPortrait={steamFilm.stillPortrait}
             className="object-[62%_50%]"
           />
         }

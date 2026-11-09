@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { site } from '@ccs/shared';
 import { Container } from '@/components/ui/Container';
 import { Eyebrow } from '@/components/ui/Eyebrow';
-import { ArrowUpRight, Instagram, TikTok } from '@/components/ui/icons';
+import { ArrowUpRight, Instagram } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { RevealText } from '@/components/ui/RevealText';
 import { contact } from '@/content/contact';
@@ -10,8 +10,10 @@ import { ContactForm } from './contact/ContactForm';
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
   Instagram: <Instagram className="size-[1.125rem]" />,
-  TikTok: <TikTok className="size-4" />,
 };
+
+/** Social Media in dieser Sektion – ohne TikTok. */
+const socials = site.socials.filter((social) => social.label !== 'TikTok');
 
 /** „Bereit für Showroom-Glanz?“ → ["Bereit für", "Showroom-Glanz?"] – der Akzent trägt den Verlaufstext. */
 function splitAccent(title: string, accent: string): [string, string] {
@@ -120,7 +122,7 @@ function Methods() {
         </Row>
         <Row label={m.social}>
           <ul className="flex gap-3">
-            {site.socials.map((social) => (
+            {socials.map((social) => (
               <li key={social.href}>
                 <a
                   href={social.href}

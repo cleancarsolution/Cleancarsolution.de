@@ -31,7 +31,7 @@ export const hygiene = {
     title: 'Hygiene',
     text: 'Trockendampf',
   },
-  /** „Klarsicht“ über dem Video (Zeitlupe, siehe content/media.ts): links Milchglas, rechts klar. */
+  /** „Klarsicht“ über dem Video (Trockendampf, siehe content/media.ts): links Milchglas, rechts klar. */
   compare: {
     before: 'Sauber',
     after: 'Hygienisch',

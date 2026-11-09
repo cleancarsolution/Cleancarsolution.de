@@ -1,12 +1,13 @@
 /*
  * Studiolicht – Preis-Sektion.
- * Ein Paneel aus schwarzem Lack im Nachtstudio: Reflexe der LED-Deckenleisten laufen schräg darüber,
- * die Chrom-Ziffern fangen das Licht, darunter spiegeln sie sich im glänzenden Boden.
+ * Ein Paneel aus schwarzem Lack im Nachtstudio: Ein Scheinwerfer schaltet sich ein (kurzes Aufflackern),
+ * sein Lichtkegel mit feinem Nebel fällt schräg auf die Chrom-Ziffern, am Boden liegt ein Lichtfleck,
+ * darunter spiegeln sich die Ziffern im glänzenden Boden.
  *
  * Auslöser: [data-lit='true'] am Paneel (LacquerPanel, einmalig beim Hineinscrollen) – das Studio wird hell.
- * Zeiger:   --mx / --my (−1 … 1) am Paneel, nur Maus. Reflexe und Glanzlicht folgen dem Blickwinkel.
+ * Zeiger:   --mx / --my (−1 … 1) am Paneel, nur Maus. Der Kegel schwenkt mit, das Glanzlicht folgt dem Blickwinkel.
  * Animiert werden ausschließlich transform und opacity.
- * „Bewegung reduzieren“: Endzustand sofort, keine Parallaxe, Glanzlicht ruht.
+ * „Bewegung reduzieren“: Endzustand sofort, kein Flackern, kein Nebelzug, Kegel und Glanzlicht ruhen.
  */
 
 .panel {
@@ -18,17 +19,10 @@
 
 /* ── Licht an ─────────────────────────────────────────────────────────────── */
 
-/* Oberkante und Raumlicht folgen der ersten Leiste */
+/* Oberkante und Raumlicht kommen mit dem Scheinwerfer */
 .ambient {
   opacity: 0;
   transition: opacity 1.6s var(--ease-out-quint) 0.3s;
-}
-
-/* Jede LED-Leiste schaltet sich ruhig ein – eine nach der anderen (--i = Reihenfolge) */
-.strip {
-  opacity: 0;
-  transition: opacity 1.1s var(--ease-out-quint);
-  transition-delay: calc(0.2s + var(--i, 0) * 0.16s);
 }
 
 /* Die Ziffern liegen im Dunkel, bis das Licht sie trifft */
@@ -49,7 +43,6 @@
 }
 
 .panel[data-lit='true'] .ambient,
-.panel[data-lit='true'] .strip,
 .panel[data-lit='true'] .lit {
   opacity: 1;
 }
@@ -62,17 +55,141 @@
   opacity: 1;
 }
 
-/* ── Parallaxe der Reflexe ────────────────────────────────────────────────── */
+/* ── Scheinwerfer ─────────────────────────────────────────────────────────── */
 
-/* Ebene mit Tiefe: --depth-x/--depth-y = Weg bei Zeiger am Rand */
-.drift {
-  transform: translate3d(calc(var(--mx) * var(--depth-x, 16px)), calc(var(--my) * var(--depth-y, 8px)), 0);
+/*
+ * Kegel in em der Ziffern: Der Kasten reicht von hoch über dem Paneel (dort hängt die Lampe, außerhalb des Bildes)
+ * bis auf die Bodenlinie. Lampe bei 70 % oben, Achse (--aim) zeigt schräg nach links unten auf die „89“.
+ */
+.spot {
+  --aim: 199deg;
+  position: absolute;
+  z-index: -1;
+  top: -2.4em;
+  right: -1.4em;
+  bottom: 0.34em;
+  left: -0.9em;
+  pointer-events: none;
+  opacity: 0;
+  transform: rotate(calc(var(--mx) * -4deg));
+  transform-origin: 70% 0%;
   transition: transform 1.4s var(--ease-out-quint);
 }
 
+.panel[data-lit='true'] .spot {
+  animation: spot-on 1.3s linear 0.1s forwards;
+}
+
 @media (hover: hover) and (pointer: fine) {
-  .drift {
+  .spot {
     will-change: transform;
+  }
+}
+
+/* Lichtkegel: kaltes Weiß in der Achse, zu den Rändern Eisblau, nach unten etwas schwächer */
+.beam {
+  position: absolute;
+  inset: 0;
+  background-image: conic-gradient(
+    from 0deg at 70% 0%,
+    transparent calc(var(--aim) - 13deg),
+    rgb(132 208 250 / 0.06) calc(var(--aim) - 9deg),
+    rgb(184 228 252 / 0.13) calc(var(--aim) - 4deg),
+    rgb(228 245 254 / 0.17) var(--aim),
+    rgb(184 228 252 / 0.13) calc(var(--aim) + 4deg),
+    rgb(132 208 250 / 0.06) calc(var(--aim) + 9deg),
+    transparent calc(var(--aim) + 13deg)
+  );
+  -webkit-mask-image: linear-gradient(180deg, #000 35%, rgb(0 0 0 / 0.55) 100%);
+  mask-image: linear-gradient(180deg, #000 35%, rgb(0 0 0 / 0.55) 100%);
+}
+
+/* Nebel im Kegel: weiche Rauschwolken (feTurbulence), die langsam durch das Licht ziehen */
+.haze {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.4;
+  -webkit-mask-image: conic-gradient(
+    from 0deg at 70% 0%,
+    transparent calc(var(--aim) - 12deg),
+    #000 calc(var(--aim) - 4deg),
+    #000 calc(var(--aim) + 4deg),
+    transparent calc(var(--aim) + 12deg)
+  );
+  mask-image: conic-gradient(
+    from 0deg at 70% 0%,
+    transparent calc(var(--aim) - 12deg),
+    #000 calc(var(--aim) - 4deg),
+    #000 calc(var(--aim) + 4deg),
+    transparent calc(var(--aim) + 12deg)
+  );
+}
+
+/* Filterfläche = Kachel (x/y/width/height), sonst passen die Ränder der Rauschkachel nicht aneinander */
+.mist {
+  position: absolute;
+  inset: -10% -40%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='m' x='0' y='0' width='1' height='1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.005 0.011' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78 0 0 0 0 0.9 0 0 0 0 1 0 0 0 1.25 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
+  background-size: 640px 640px;
+  animation: mist-drift 46s ease-in-out infinite alternate;
+}
+
+/* Lichtfleck, wo der Kegel auf den Boden trifft – wandert mit dem Kegel */
+.pool {
+  position: absolute;
+  z-index: -1;
+  top: 0.62em;
+  right: -0.35em;
+  left: -0.25em;
+  height: 0.36em;
+  pointer-events: none;
+  background-image: radial-gradient(
+    50% 50% at 50% 50%,
+    rgb(184 228 252 / 0.2),
+    rgb(132 208 250 / 0.07) 45%,
+    transparent 72%
+  );
+  opacity: 0;
+  transform: translate3d(calc(var(--mx) * 0.1em), 0, 0);
+  transition:
+    opacity 1.6s var(--ease-out-quint) 0.6s,
+    transform 1.4s var(--ease-out-quint);
+}
+
+.panel[data-lit='true'] .pool {
+  opacity: 1;
+}
+
+/* Einschalten wie ein Studio-Scheinwerfer: zweimal kurz aufflackern, dann steht das Licht */
+@keyframes spot-on {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.6;
+  }
+  9% {
+    opacity: 0.1;
+  }
+  14% {
+    opacity: 0.85;
+  }
+  19% {
+    opacity: 0.35;
+  }
+  28%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes mist-drift {
+  from {
+    transform: translate3d(-12%, 2%, 0);
+  }
+  to {
+    transform: translate3d(12%, -2%, 0);
   }
 }
 
@@ -187,26 +304,33 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ambient,
-  .strip,
   .lit,
   .floor,
   .reflection,
-  .drift,
+  .spot,
+  .pool,
   .follow,
   .unfollow {
     transition: none;
   }
 
   .ambient,
-  .strip,
   .lit,
-  .reflection {
+  .reflection,
+  .spot,
+  .pool {
     opacity: 1;
   }
 
   .floor,
-  .drift {
+  .spot,
+  .pool {
     transform: none;
+  }
+
+  .panel[data-lit='true'] .spot,
+  .mist {
+    animation: none;
   }
 
   .sweep,

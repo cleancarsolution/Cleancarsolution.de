@@ -31,8 +31,6 @@ export const about = {
     { value: '0 €', label: 'Beratung & Fahrzeuganalyse' },
     { value: '6', label: 'Leistungen unter einem Dach' },
   ],
-  /** Bildunterschrift des Filmbands (Video: Studiofilm aus dem Hero, siehe content/media.ts). */
-  filmCaption: 'Einblick ins Studio',
   /** Zeile über den Produkt-Wortmarken (Marken selbst: `site.brands`). */
   brandsLabel: 'Wir arbeiten mit Produkten von',
 } as const;

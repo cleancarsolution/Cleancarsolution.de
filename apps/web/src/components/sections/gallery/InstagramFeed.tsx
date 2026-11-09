@@ -1,21 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { ButtonLink, buttonClasses } from '@/components/ui/Button';
+import { useEffect, useState } from 'react';
+import { ButtonLink } from '@/components/ui/Button';
 import { Instagram } from '@/components/ui/icons';
 import { SliderControls, useSnapSlider } from '@/components/ui/SnapSlider';
-import { SmartLink } from '@/components/ui/SmartLink';
 import { gallery } from '@/content/gallery';
-import { legalNav } from '@/content/navigation';
 import { cn } from '@/lib/cn';
 import { ReelTile } from './ReelTile';
 
 export interface InstagramPost {
   /** Link zum Beitrag, z. B. `https://www.instagram.com/reel/…/`. */
   url: string;
+  /** Instagram schreibt „Auf Instagram ansehen“ selbst in die Vorschau (Reel lässt sich eingebettet nicht abspielen). */
+  instagramLabel?: boolean;
 }
-
-const privacy = legalNav.find((item) => item.href === '/datenschutz');
 
 /** „…/reel/ABC/“ → „Reel“, „…/p/ABC/“ → „Beitrag“. */
 function postType(url: string): string {
@@ -23,8 +21,11 @@ function postType(url: string): string {
   return gallery.feed.types[kind as keyof typeof gallery.feed.types] ?? gallery.feed.types.p;
 }
 
-/** ~1,3 Folien auf dem Smartphone, ~5 ab xl – die angeschnittene nächste Folie zeigt, dass es weitergeht. */
-const SLIDE = 'w-[72%] sm:w-[40%] lg:w-[26%] xl:w-[19.5%]';
+/** ~1,3 Folien auf dem Smartphone, ~2,6 ab lg, ~3,2 ab xl – die angeschnittene nächste Folie zeigt, dass es weitergeht. */
+const SLIDE = 'w-[72%] sm:w-[40%] lg:w-[36%] xl:w-[30%]';
+
+/** Vorlauf: So nah am Slider laden alle Vorschauen – beim Hinscrollen stehen sie schon da. */
+const PRELOAD_MARGIN = '1200px 0px';
 
 interface InstagramFeedProps {
   posts: readonly InstagramPost[];
@@ -35,20 +36,29 @@ interface InstagramFeedProps {
  * Instagram-Reels als Slider – ein Kontaktabzug: Kacheln im Format 4 : 5 zwischen Haarlinien, Wischen mit
  * Einrasten, Blättern per Pfeil-Knöpfen; zum Schluss die Profil-Karte.
  *
- * Jede Kachel führt zum Reel auf Instagram (neuer Tab), abgespielt wird dort. Die Vorschauen kommen per
- * Zwei-Klick-Lösung (DSGVO) von Instagram: Bis zur Einwilligung lädt nichts von Instagram; ein Klick auf
- * „Instagram-Inhalte laden“ lädt alle Vorschauen (Einwilligung gilt bis zum Neuladen).
+ * Jede Kachel führt zum Reel auf Instagram (neuer Tab), abgespielt wird dort. Die Vorschauen kommen von
+ * Instagram und laden von selbst, sobald der Slider in die Nähe kommt (`PRELOAD_MARGIN`) – alle auf einmal,
+ * auch die noch seitlich verborgenen.
  */
 export function InstagramFeed({ posts, profile }: InstagramFeedProps) {
   const feed = gallery.feed;
   const { trackRef, thumbRef, atStart, atEnd, step } = useSnapSlider();
-  const [consent, setConsent] = useState(false);
+  const [near, setNear] = useState(false);
 
-  const load = () => {
-    setConsent(true);
-    // Der Knopf verschwindet – der Fokus wandert zum ersten Reel, ohne die Seite zu verschieben
-    window.requestAnimationFrame(() => trackRef.current?.querySelector('a')?.focus({ preventScroll: true }));
-  };
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setNear(true);
+        observer.disconnect();
+      },
+      { rootMargin: PRELOAD_MARGIN },
+    );
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [trackRef]);
 
   return (
     <div>
@@ -73,7 +83,7 @@ export function InstagramFeed({ posts, profile }: InstagramFeedProps) {
               </p>
 
               <div className="relative aspect-[4/5] flex-1">
-                <ReelTile url={post.url} label={`${type} ${index + 1}`} consent={consent} />
+                <ReelTile url={post.url} label={`${type} ${index + 1}`} load={near} instagramLabel={post.instagramLabel} />
               </div>
             </li>
           );
@@ -96,26 +106,6 @@ export function InstagramFeed({ posts, profile }: InstagramFeedProps) {
           </ButtonLink>
         </li>
       </ul>
-
-      {consent ? null : (
-        <div className="mt-6 flex flex-col gap-4 sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-          <p className="max-w-[64ch] text-[0.8125rem] leading-relaxed text-fg-subtle">
-            {feed.consent.note}
-            {privacy ? (
-              <>
-                {' '}
-                <SmartLink href={privacy.href} className="underline underline-offset-4 transition-colors duration-300 hover:text-fg">
-                  {privacy.label}
-                </SmartLink>
-              </>
-            ) : null}
-          </p>
-          <button type="button" onClick={load} className={buttonClasses({ variant: 'secondary', className: 'gap-2.5 self-start sm:self-auto' })}>
-            <Instagram aria-hidden className="size-4" />
-            {feed.consent.load}
-          </button>
-        </div>
-      )}
 
       <SliderControls
         thumbRef={thumbRef}

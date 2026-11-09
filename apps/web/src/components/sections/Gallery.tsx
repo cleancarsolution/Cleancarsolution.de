@@ -3,7 +3,7 @@ import { site } from '@ccs/shared';
 import { buttonClasses } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Eyebrow } from '@/components/ui/Eyebrow';
-import { Instagram, TikTok } from '@/components/ui/icons';
+import { Instagram } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { RevealText } from '@/components/ui/RevealText';
 import { gallery } from '@/content/gallery';
@@ -11,9 +11,10 @@ import { InstagramFeed } from './gallery/InstagramFeed';
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
   Instagram: <Instagram className="size-[1.125rem]" />,
-  TikTok: <TikTok className="size-4" />,
 };
 
+/** Social Media in dieser Sektion – ohne TikTok. */
+const socials = site.socials.filter((social) => social.label !== 'TikTok');
 const instagram = site.socials.find((social) => social.label === 'Instagram');
 
 /**
@@ -35,7 +36,7 @@ export function Gallery() {
           <Reveal className="col-span-12 mt-8 lg:col-span-4 lg:col-start-9 lg:mt-0 lg:self-end" delay={0.15}>
             <p className="max-w-[46ch] leading-relaxed text-fg-muted">{gallery.text}</p>
             <ul className="mt-6 flex flex-wrap gap-3">
-              {site.socials.map((social) => (
+              {socials.map((social) => (
                 <li key={social.href}>
                   <a
                     href={social.href}

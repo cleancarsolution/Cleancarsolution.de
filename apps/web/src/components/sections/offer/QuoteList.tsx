@@ -35,7 +35,7 @@ export function QuoteList({ className }: { className?: string }) {
         {/* Spaltenköpfe wie auf einer Preisliste – nur ab Desktop, für Screenreader trägt die Zeile selbst */}
         <div
           aria-hidden
-          className="hidden grid-cols-[4.5rem_minmax(15rem,20rem)_1fr_10rem] gap-x-8 pb-4 text-eyebrow font-medium text-fg-subtle uppercase font-expanded lg:grid"
+          className="hidden grid-cols-[4.5rem_minmax(15rem,20rem)_1fr_10rem] gap-x-8 pr-6 pb-4 text-eyebrow font-medium text-fg-subtle uppercase font-expanded lg:grid xl:pr-8"
         >
           <span />
           <span>{c.list.service}</span>
@@ -49,7 +49,7 @@ export function QuoteList({ className }: { className?: string }) {
             return (
               <li
                 key={slug}
-                className="group/row relative grid grid-cols-[2.75rem_1fr] gap-x-3 border-b border-line py-7 transition-colors duration-500 ease-out-quint hover:bg-white/[0.025] has-[:focus-visible]:bg-white/[0.025] sm:grid-cols-[4.5rem_1fr] sm:gap-x-0 lg:grid-cols-[4.5rem_minmax(15rem,20rem)_1fr_10rem] lg:items-center lg:gap-x-8 lg:py-9"
+                className="group/row relative grid grid-cols-[2.75rem_1fr] gap-x-3 border-b border-line py-7 transition-colors duration-500 ease-out-quint hover:bg-white/[0.025] has-[:focus-visible]:bg-white/[0.025] sm:grid-cols-[4.5rem_1fr] sm:gap-x-0 lg:grid-cols-[4.5rem_minmax(15rem,20rem)_1fr_10rem] lg:items-center lg:gap-x-8 lg:py-9 lg:pr-6 xl:pr-8"
               >
                 {/* Lichtkante, die beim Überfahren unter der Zeile entlangläuft */}
                 <span

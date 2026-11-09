@@ -9,7 +9,9 @@ interface StudioPriceProps {
 }
 
 /**
- * „ab 89 €“ als Chrom-Ziffern auf dem Studioboden.
+ * „ab 89 €“ als Chrom-Ziffern auf dem Studioboden, im Kegel eines Scheinwerfers.
+ * Der Scheinwerfer hängt außerhalb des Bildes schräg über den Ziffern: Sein Lichtkegel (mit feinem Nebel darin)
+ * fällt auf die „89“, am Boden liegt ein Lichtfleck. Alles in em gemessen – der Kegel trifft bei jeder Größe.
  * Ebenen der Ziffern (alle deckungsgleich, nur die erste trägt das Layout):
  *   1. Silhouette im Dunkel  2. Chrom (blendet ein, sobald das Licht angeht)
  *   3. Glanzlicht – ein schräges Lichtband zieht einmal herein und folgt danach dem Zeiger.
@@ -28,6 +30,15 @@ export function StudioPrice({ prefix, price, className }: StudioPriceProps) {
         aria-hidden
         className="relative flex items-start pb-[0.34em] text-[clamp(8.5rem,4.6rem+13.2vw,19.5rem)] font-medium tracking-[-0.065em] font-wide"
       >
+        {/* Scheinwerfer: Kegel bis zur Bodenlinie, darin treibender Nebel; Lichtfleck auf dem Boden */}
+        <span data-reveal className={styles.spot}>
+          <span className={styles.beam} />
+          <span className={styles.haze}>
+            <span className={styles.mist} />
+          </span>
+        </span>
+        <span data-reveal className={styles.pool} />
+
         {/*
           „ab“ und „€“ hängen an der Versalhöhe der Ziffern: Ziffern-Oberkante liegt bei 0,051 em (Zeilenhöhe 0,8),
           Zeilenhöhe 0,7 setzt die Box-Oberkante der kleinen Zeichen auf ihre eigene Versalhöhe.

@@ -97,8 +97,12 @@ export function MobileMenu({ id, open, current, onClose }: MobileMenuProps) {
         className="pointer-events-none absolute -bottom-[30vh] left-1/2 h-[70vh] w-[150vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(0_72_206/0.28),rgb(38_171_246/0.06)_55%,transparent)]"
       />
 
-      <div data-lenis-prevent className="relative h-full overflow-y-auto overscroll-contain">
-        <Container className="flex min-h-full flex-col pt-[5.5rem] pb-[max(2rem,env(safe-area-inset-bottom))]">
+      {/* Scrollt erst unterhalb der Kopfleiste (h-16) – Einträge verschwinden darunter, statt hinter das Logo zu laufen */}
+      <div
+        data-lenis-prevent
+        className="absolute inset-x-0 top-16 bottom-0 overflow-y-auto overscroll-contain [mask-image:linear-gradient(180deg,transparent,#000_1.5rem)]"
+      >
+        <Container className="flex min-h-full flex-col pt-6 pb-[max(2rem,env(safe-area-inset-bottom))]">
           <nav aria-label={mobileMenu.navLabel}>
             <ul className="border-t border-line">
               {mainNav.map((entry, index) => {
@@ -198,7 +202,11 @@ export function MobileMenu({ id, open, current, onClose }: MobileMenuProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${social.label}: ${social.handle} (öffnet in neuem Tab)`}
-                  className="grid size-12 shrink-0 place-items-center rounded-full border border-line bg-white/[0.03] text-fg-muted transition-colors duration-300 hover:text-fg"
+                  className={cn(
+                    'grid size-12 shrink-0 place-items-center rounded-full border border-line bg-white/[0.03] text-fg-muted transition-colors duration-300 hover:text-fg',
+                    // TikTok erst ab Tablet – auf dem Smartphone nicht
+                    social.label === 'TikTok' && 'max-sm:hidden',
+                  )}
                 >
                   {SOCIAL_ICONS[social.label]}
                 </a>

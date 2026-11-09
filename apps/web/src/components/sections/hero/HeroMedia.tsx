@@ -2,6 +2,7 @@
 
 import { motion, useTransform } from 'motion/react';
 import type { CSSProperties, ReactNode } from 'react';
+import { PHONE_QUERY } from '@/components/media/VideoPoster';
 import { cn } from '@/lib/cn';
 import { useHero } from './HeroStage';
 import styles from './hero.module.css';
@@ -9,8 +10,9 @@ import styles from './hero.module.css';
 interface HeroMediaProps {
   /** Server-gerendertes <picture>: Poster (erster Frame) bzw. Standbild bei „Bewegung reduzieren“. */
   picture: ReactNode;
-  sources: { portrait: string; medium: string; large: string };
-  /** Bildausschnitt – das Auto steht rechts, links bleibt Raum für die Headline. */
+  /** `phone`: eigener Film fürs Smartphone (< 640 px), schon im Hochformat zugeschnitten – mittig gezeigt. */
+  sources: { phone: string; portrait: string; medium: string; large: string };
+  /** Bildausschnitt ab Tablet – das Auto steht rechts, links bleibt Raum für die Headline. */
   objectPosition: string;
 }
 
@@ -46,10 +48,11 @@ export function HeroMedia({ picture, sources, objectPosition }: HeroMediaProps) 
             onPlaying={video.onPlaying}
             onPause={video.onPause}
             className={cn(
-              'absolute inset-0 size-full object-cover object-(--hero-object) transition-opacity duration-[1400ms] ease-out',
+              'absolute inset-0 size-full object-cover object-(--hero-object) transition-opacity duration-[1400ms] ease-out max-sm:object-center',
               video.revealed ? 'opacity-100' : 'opacity-0',
             )}
           >
+            <source media={PHONE_QUERY} src={sources.phone} type="video/mp4" />
             <source media="(max-aspect-ratio: 3/4)" src={sources.portrait} type="video/mp4" />
             <source media="(max-width: 1100px)" src={sources.medium} type="video/mp4" />
             <source src={sources.large} type="video/mp4" />

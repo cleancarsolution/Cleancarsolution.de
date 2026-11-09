@@ -17,7 +17,7 @@ interface LacquerPanelProps {
  * - Sobald die Oberkante des Paneels das untere Viertel des Bildschirms hinter sich lässt, geht das Studiolicht an
  *   (`data-lit`, einmalig) – bewusst über die Position statt über einen Sichtbarkeitsanteil, damit es auch auf
  *   niedrigen Bildschirmen (Querformat, 200 % Zoom) zuverlässig angeht. Die Choreografie liegt in `studio.module.css`.
- * - Mit der Maus wandern Reflexe und Glanzlicht mit dem Blickwinkel: Position landet rAF-gedrosselt als
+ * - Mit der Maus schwenken Scheinwerfer und Glanzlicht mit dem Blickwinkel: Position landet rAF-gedrosselt als
  *   `--mx`/`--my` (−1 … 1) am Element, ohne React-Re-Render. Touch und „Bewegung reduzieren“: ruhig.
  */
 export function LacquerPanel({ children, labelledBy, className }: LacquerPanelProps) {

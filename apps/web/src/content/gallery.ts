@@ -5,19 +5,21 @@
 export const gallery = {
   eyebrow: 'Einblick',
   title: 'Leidenschaft, die man sieht.',
-  text: 'Ein Blick hinter die Kulissen unserer Arbeit in Düsseldorf. Mehr Ergebnisse, Vorher-Nachher-Vergleiche und Reels finden Sie auf Instagram und TikTok.',
+  text: 'Ein Blick hinter die Kulissen unserer Arbeit in Düsseldorf. Mehr Ergebnisse, Vorher-Nachher-Vergleiche und Reels finden Sie auf Instagram.',
   feed: {
     /**
      * Beiträge im Slider – Link aus „Teilen → Link kopieren“ bzw. dem Einbettungs-Code (`data-instgrm-permalink`),
      * ohne `?utm_…`. Reihenfolge = Reihenfolge im Slider; neue Beiträge einfach ergänzen.
      *
-     * Jede Kachel zeigt das Reel als Vorschau von Instagram (erst nach Klick auf „Instagram-Inhalte laden“) und
-     * führt zum Reel auf Instagram – abgespielt wird dort.
+     * Jede Kachel zeigt das Reel als Vorschau von Instagram (lädt von selbst, kurz bevor der Slider ins Bild kommt)
+     * und führt zum Reel auf Instagram – abgespielt wird dort. Unter dem Play-Zeichen steht „Auf Instagram ansehen“.
+     * Spielt Instagram ein Reel eingebettet nicht ab, schreibt es den Hinweis selbst hin – dann
+     * `instagramLabel: true` setzen, sonst steht er doppelt.
      */
     posts: [
       { url: 'https://www.instagram.com/reel/DMXa50FI_H0/' },
       { url: 'https://www.instagram.com/reel/DMFSWP1I2Lg/' },
-      { url: 'https://www.instagram.com/reel/DHGZE8woLd7/' },
+      { url: 'https://www.instagram.com/reel/DHGZE8woLd7/', instagramLabel: true },
       { url: 'https://www.instagram.com/reel/DF09ySSIlWL/' },
     ],
     label: 'Beiträge auf Instagram',
@@ -25,10 +27,7 @@ export const gallery = {
     types: { reel: 'Reel', p: 'Beitrag', tv: 'Video' },
     /** Pfeil-Knöpfe unter dem Slider. */
     controls: { prev: 'Zurückblättern', next: 'Weiterblättern' },
-    consent: {
-      load: 'Instagram-Inhalte laden',
-      note: 'Zum Schutz Ihrer Daten laden die Vorschauen der Reels erst nach Ihrem Klick. Dabei werden Daten an Instagram (Meta Platforms Ireland Ltd.) übertragen.',
-    },
+    /** Hinweis auf jeder Kachel (und für Screenreader) – die ganze Kachel öffnet das Reel. */
     open: 'Auf Instagram ansehen',
     profile: {
       eyebrow: 'Instagram',

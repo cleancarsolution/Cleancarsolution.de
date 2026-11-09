@@ -13,7 +13,6 @@ import { ProductBanner } from './offer/ProductBanner';
 import { QuoteList } from './offer/QuoteList';
 import { ServiceRequestLink } from './offer/ServiceRequestLink';
 import { StudioPrice } from './offer/StudioPrice';
-import { StudioStrips } from './offer/StudioStrips';
 import styles from './offer/studio.module.css';
 
 /** „Faire Preise. Kompromisslose Qualität.“ → zwei Sätze, zweiter Satz im zweiten Ton. */
@@ -23,10 +22,10 @@ function sentences(text: string): string[] {
 
 /**
  * 04 — PREISE (schwarz). Idee: „Studiolicht“.
- * Das Angebot ist ein Paneel aus schwarzem Lack im Nachtstudio. Scrollt es ins Bild, schalten sich die
- * LED-Deckenleisten nacheinander ein – ihre Reflexe laufen schräg über den Lack, die Chrom-Ziffern fangen
- * das Licht, ein Glanzlicht legt sich auf die „89“, darunter spiegelt sich der Preis im Boden.
- * Mit der Maus wandern Reflexe und Glanzlicht mit dem Blickwinkel. Darunter die übrigen Leistungen als
+ * Das Angebot ist ein Paneel aus schwarzem Lack im Nachtstudio. Scrollt es ins Bild, flackert ein Scheinwerfer
+ * auf – sein Lichtkegel mit feinem Nebel fällt schräg auf die „89“, die Chrom-Ziffern fangen das Licht, ein
+ * Glanzlicht legt sich darauf, am Boden liegt ein Lichtfleck und der Preis spiegelt sich darin.
+ * Mit der Maus schwenkt der Kegel mit, das Glanzlicht folgt dem Blickwinkel. Darunter die übrigen Leistungen als
  * ruhige Preisliste, zum Schluss die Produktmarken und der Platz für die eigenen Produkte (`ProductBanner`).
  * Signalrot trägt nur das Angebots-Badge.
  */
@@ -96,10 +95,9 @@ function FeaturedOffer() {
         )}
       />
 
-      {/* Bühne: Name, Badge, Preis */}
+      {/* Bühne: Name, Badge, Preis im Scheinwerferlicht (StudioPrice) */}
       <div className="relative flex flex-col p-6 sm:p-10 lg:col-span-7 xl:p-14">
-        <StudioStrips className="absolute inset-0 -z-10 lg:right-[-71.43%]" />
-        {/* Zum Boden hin liegt der Lack im Schatten – die Beschreibung steht ruhig, ohne Reflexe dahinter */}
+        {/* Zum Boden hin liegt der Lack im Schatten – die Beschreibung steht ruhig, ohne Licht dahinter */}
         <span
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[38%] bg-[linear-gradient(0deg,var(--color-ink-950)_22%,rgb(3_5_15/0.72)_58%,transparent)]"
@@ -123,7 +121,7 @@ function FeaturedOffer() {
         <p className="mt-auto max-w-[44ch] pt-6 text-[1.0625rem] leading-relaxed text-pretty text-fg-muted">{f.description}</p>
       </div>
 
-      {/* Datenblatt: Leistungsumfang, Termin – die Reflexe laufen nur noch gedämpft darunter weiter */}
+      {/* Datenblatt: Leistungsumfang, Termin */}
       <div className="relative flex flex-col border-t border-white/10 bg-ink-950/85 p-6 sm:p-10 lg:col-span-5 lg:border-t-0 lg:border-l xl:p-14">
         <p className="flex items-center justify-between gap-4 text-eyebrow font-medium text-fg-subtle uppercase font-expanded">
           {f.includesTitle}

@@ -93,7 +93,7 @@ Regeln:
 | `Reveal`       | Block blendet beim Hineinscrollen ein (einmalig)                       |
 | `RevealText`   | Headline Wort für Wort aus Masken (`immediate` für Hero)               |
 | `Sparkle`      | Vierzackiger Funkel-Stern aus dem Logo – Mikro-Ornament                |
-| `icons`        | Linien-Icons 1,5 px (inkl. Instagram/TikTok)                           |
+| `icons`        | Linien-Icons 1,5 px (inkl. Instagram/TikTok/WhatsApp)                  |
 | `MarqueeTrack` | Laufband-Spur, bremst beim Überfahren weich ab (Leistungs-Laufband) |
 | `SnapSlider`   | `useSnapSlider` + `SliderControls`: waagrechter Slider mit Einrasten, Fortschrittslinie (Sky → Royal) und Pfeil-Knöpfen – Einblick und Kundenstimmen |
 | `brand/Logo`   | `variant="color"` (Originalfarben wie beim Kunden – nur auf Hell) / `"light"` (weißes Auto, auf Navy) / `"blue"` (blaues Auto auf Dunkel), `showWordmark`. `data-part` je Pfad für CSS-Animationen |
@@ -101,7 +101,7 @@ Regeln:
 | `media/*`      | Schleifen-Videos im Seitenfluss: `useLoopVideo` (lädt kurz vor Sichtbarkeit, spielt nur sichtbar, respektiert „Bewegung reduzieren“/Datensparmodus), `LoopVideoMedia` (Poster + Video), `VideoPoster` (Art Direction, Standbild bei reduzierter Bewegung), `VideoToggle` (Pause/Play mit Fortschrittsring) |
 | `partner/*`    | Inhouse-Partner PKW-Schmiede als ruhige Empfehlung, nie als Werbefläche: schwarze Karten mit Haarlinie, ohne Schein. `PartnerEndorsement` (Footer: Logo · Nutzen + Leistungen · Weg zur Website, ganze Karte klickbar), `PartnerPromo` (Mega-Dropdown, kompakt im Mobile-Menü), `PartnerLogoAnimated` (Zahnrad dreht sich ein; `spin={false}` = steht still und rückt beim Überfahren der Karte einen Zahn weiter); Texte in `content/partner.ts` |
 | `reviews/*`    | Kundenstimmen: `RatingLights` (Sterne der Gesamtnote, schalten sich beim Hineinscrollen nacheinander ein; Bruchteile leuchten anteilig), `ReviewSlider` (Rezensionen im `SnapSlider`) |
-| `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioStrips` (Reflexe der LED-Deckenleisten), `StudioPrice` (Chrom-Ziffern mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
+| `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioPrice` (Chrom-Ziffern im Scheinwerferkegel mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
 
 Hilfen: `lib/scroll.ts` (Lenis, `scrollToId`, `lockScroll`), `lib/events.ts` (`requestService(slug)` wählt im
 Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauern), `lib/cn.ts`.
@@ -122,11 +122,14 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
 - Video (Pfade zentral in `content/media.ts`):
   - Banner-Film `/media/banner-1080.mp4`, `banner-720.mp4`, `banner-portrait.mp4` (Hochformat-Schnitt, schwenkt
     mit dem Motiv), Poster `banner-poster(-portrait).jpg` (= erster Frame), Standbild `banner-still(-portrait).jpg`
-    (für reduzierte Bewegung). Läuft im Hero.
+    (für reduzierte Bewegung). Läuft im Hero ab Tablet; auf dem Smartphone (< 640 px) läuft dort der
+    Handwäsche-Film als eigener Hochformat-Schnitt `handwaesche-hero.mp4` (+ `-poster`/`-still.jpg`).
   - Studiofilm `/media/hero-1080.mp4`, `hero-720.mp4`, `hero-portrait.mp4` (Hochformat-Schnitt), Poster
     `hero-poster(-portrait).jpg` (= erster Frame), Standbild `hero-still(-portrait).jpg` (für reduzierte Bewegung).
     Läuft im Filmband von „Über uns“ und auf der Bühne des Mega-Dropdowns.
-  - Sprühnebel-Zeitlupe `/media/hygiene-720.mp4`, `hygiene-portrait.mp4` (4 : 5) – Hygiene-Sektion.
+  - Trockendampf-Film `/media/dampf-hygiene-720.mp4`, `dampf-hygiene-portrait.mp4` (4 : 5), Poster
+    `dampf-hygiene-poster(-portrait).jpg`, Standbild `dampf-hygiene-still(-portrait).jpg` – Hygiene-Sektion auf allen
+    Breiten. Die frühere Sprühnebel-Zeitlupe `hygiene-*` liegt weiter in `/media/`, ist aber nicht eingebunden.
   - Leistungsfilme (`serviceFilms`) je `/media/<film>-720.mp4` + `<film>-portrait.mp4` (2 : 3, schwenkt mit
     dem Motiv): Lackpolitur → Fahrzeugaufbereitung, Handwäsche (`handwaesche-1080.mp4`, noch unbearbeitet für beide
     Formate) → Handwäsche, Innenraum → Innen & Außen, Leder → Polster & Leder,
@@ -135,7 +138,10 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
     fest, welcher Streifen zu sehen ist (y) bzw. welcher Ausschnitt auf der Mobile-Karte (x). In der
     Leistungs-Sektion ersetzt der Film das Foto (Desktop-Bühne: Hochformat-Schnitt, Mobile-Karte: Querformat).
   - Reels (Einblick, `content/gallery.ts` → `feed.posts`): Kachel (4 : 5) mit Vorschau aus der Instagram-Einbettung
-    (nach Einwilligung, auf das Bild zugeschnitten) – abgespielt wird auf Instagram, ein Klick führt dorthin.
+    (lädt von selbst kurz vor dem Slider, auf das Bild zugeschnitten, mit Instagrams eigenem Play-Zeichen, darunter
+    auf jeder Kachel „Auf Instagram ansehen“ in Instagrams weißer Schrift; bei Reels, die Instagram eingebettet nicht
+    abspielt, schreibt Instagram ihn selbst – `instagramLabel: true`) – abgespielt wird auf Instagram, ein Klick
+    führt dorthin.
 - Jedes Video: stumm, Schleife, lädt erst kurz vor Sichtbarkeit, pausiert außerhalb des Viewports, Pause/Play sichtbar.
 - Overlays: Verläufe aus `ink-950` für Lesbarkeit, feines Korn (`bg-grain`, Deckkraft 0,05–0,1).
 - Immer `next/image` mit korrektem `sizes`; Hero-Medien mit Priorität, alles andere lazy.
@@ -150,7 +156,7 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
 | 4 | Leistungen     | `#leistungen` (+ `#<slug>`) | ink-900 | `@ccs/shared` + `content/services-section.ts` |
 | 5 | Hygiene        | `#hygiene`   | **paper (hell)**| `content/hygiene.ts`                   |
 | 6 | Preise         | `#preise` (+ `#produkte`) | **schwarz (ink-950)** | `content/offer.ts` · `offer/ProductBanner` (eigene Produkte, Inhalt vom Kunden) |
-| 7 | Einblick       | `#einblick`  | ink-950         | `content/gallery.ts` (`feed.posts`: Reels im Slider – Vorschau von Instagram nach Klick (Zwei-Klick-Lösung), ein Klick auf die Kachel führt zu Instagram) |
+| 7 | Einblick       | `#einblick`  | ink-950         | `content/gallery.ts` (`feed.posts`: Reels im Slider – Vorschau von Instagram lädt von selbst, ein Klick auf die Kachel führt zu Instagram) |
 | 8 | Ablauf         | `#ablauf`    | ink-900         | `content/process.ts`                   |
 | 9 | Kundenstimmen  | `#kundenstimmen` | ink-950     | `content/reviews.ts` · Google-Rezensionen aus `lib/google-reviews.ts` (Business Profile API, alle 6 h neu), Links in `site.reviews` |
 | 10| FAQ            | `#faq`       | **paper (hell)**| `content/faq.ts`                       |
@@ -162,22 +168,24 @@ Header (fixiert, Logo, Mega-Dropdown „Leistungen“ mit Video-Bühne) und Foot
 
 Die eine Idee je Sektion (Auswahl):
 - **Über uns:** Filmband – das Studio-Video öffnet sich beim Scrollen wie eine Blende.
-- **Hygiene:** „Klarsicht“ – Zeitlupen-Video, links Milchglas („Sauber“), rechts klar („Hygienisch“); die
+- **Hygiene:** „Klarsicht“ – Trockendampf-Video, links Milchglas („Sauber“), rechts klar („Hygienisch“); die
   Trennlinie wischt sich einmal frei und lässt sich ziehen (Maus, Touch, Pfeiltasten).
 - **Einblick:** Kontaktabzug als Slider – Reels (4 : 5) zwischen Haarlinien, Vorschau von Instagram, ein Klick
   führt dorthin; Wischen mit Einrasten, Fortschrittslinie und Pfeile; die Profil-Karte schließt ab.
-- **Preise:** „Studiolicht“ – das Angebot ist ein Paneel aus schwarzem Lack. Beim Hineinscrollen schalten
-  sich die LED-Deckenleisten nacheinander ein, ihre Reflexe laufen schräg über den Lack und wandern mit dem
-  Zeiger; die Chrom-Ziffern fangen ein Glanzlicht und spiegeln sich im Boden. Darunter die übrigen Leistungen
-  als ruhige Preisliste, dann Produktmarken und der Platz für die eigenen Produkte.
+- **Preise:** „Studiolicht“ – das Angebot ist ein Paneel aus schwarzem Lack. Beim Hineinscrollen flackert ein
+  Scheinwerfer auf: Sein Lichtkegel mit feinem Nebel fällt schräg auf die Chrom-Ziffern und schwenkt mit dem
+  Zeiger, am Boden liegt ein Lichtfleck; die Ziffern fangen ein Glanzlicht und spiegeln sich im Boden. Darunter
+  die übrigen Leistungen als ruhige Preisliste, dann Produktmarken und der Platz für die eigenen Produkte.
 - **Kundenstimmen:** Die Gesamtnote aus dem Google-Profil als Lichtleiste – beim Hineinscrollen schalten sich die
-  fünf Sterne nacheinander ein (kurzer Einschalt-Glanz, dann Sterngelb wie bei Google), im Takt der LED-Leisten.
+  fünf Sterne nacheinander ein (kurzer Einschalt-Glanz, dann Sterngelb wie bei Google).
   Darunter bis zu zehn der neuesten Rezensionen mit Text im Slider zwischen Haarlinien (wie im Einblick), Name
   gekürzt („Max M.“), Originalwortlaut; am Ende der Hinweis nach § 5b Abs. 3 UWG und die Wege zu Google.
   Ohne Daten nur Überschrift und Links.
-- **Footer:** „Unter einem Dach“ – Marke mit direkten Wegen (Termin, Anrufen, Schreiben), der Inhouse-Partner
-  als Empfehlungs-Karte, Linkspalten; Finale: „CLEAN CAR“ aus schwarzem Lack auf der Bodenlinie, Studiolicht
-  gleitet einmal darüber. Ganz unten Rechtliches und „Erstellt mit Next.js & Turbopack von Palmer Digital“.
+- **Footer:** „Unter einem Dach“ – Marke mit direkten Wegen (Termin, Anrufen, Schreiben; auf dem Smartphone
+  WhatsApp statt Schreiben), der Inhouse-Partner als Empfehlungs-Karte, Linkspalten (TikTok erst ab Tablet, wie
+  im Mobile-Menü); Finale: das Logo in voller Breite auf der Bodenlinie (ab sm nebeneinander,
+  auf dem Smartphone gestapelt), gespiegelt im glänzenden Boden – die Teile kommen nacheinander, dann gleitet
+  einmal Studiolicht darüber. Ganz unten Rechtliches und „Erstellt mit Next.js & Turbopack von Palmer Digital“.
 
 ## 9. Kein „AI-Slop“ – harte Regeln
 

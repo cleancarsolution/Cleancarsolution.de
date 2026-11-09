@@ -45,21 +45,24 @@ export const studioFilm = {
 } as const;
 
 /**
- * Zeitlupe aus derselben Aufnahme (Hygiene): Handwäsche im feinen Sprühnebel, ⅓ Tempo per
- * Bewegungsinterpolation, nahtlose 4-s-Schleife (Überblendung Ende → Anfang).
- * TODO(Kunde): Sobald eine eigene Trockendampf-Aufnahme vorliegt, hier mit gleichen Dateinamen ersetzen.
+ * Trockendampf (Hygiene, `dampf-hygiene.mp4`, 10-Bit-HEVC, 15 s): Pinsel am Lenkrad und Wählhebel (Überblendungen),
+ * verschmutzter Ledersitz, Dampfpistole im Trockendampf, Abwischen mit Mikrofaser. Schnitt und Farbton
+ * unverändert, nur als H.264 (CRF 25) encodiert. Die frühere Sprühnebel-Zeitlupe (`hygiene-*`) liegt weiter
+ * in `/media/`, ist aber nicht mehr eingebunden.
  */
-export const mistFilm = {
+export const steamFilm = {
   sources: {
-    /** 720 × 900 (4 : 5), Ausschnitt um Düse und Mitarbeiter. */
-    portrait: '/media/hygiene-portrait.mp4',
-    landscape: '/media/hygiene-720.mp4',
+    /** 720 × 900 (4 : 5), fester Ausschnitt um Düse, Hände und Sitz. */
+    portrait: '/media/dampf-hygiene-portrait.mp4',
+    landscape: '/media/dampf-hygiene-720.mp4',
   },
-  poster: { src: '/media/hygiene-poster.jpg', width: 1280, height: 720 },
-  posterPortrait: { src: '/media/hygiene-poster-portrait.jpg', width: 720, height: 900 },
-  still: { src: '/media/hygiene-still.jpg', width: 1280, height: 720 },
-  stillPortrait: { src: '/media/hygiene-still-portrait.jpg', width: 720, height: 900 },
-  alt: 'Mitarbeiter von Clean Car Solution reinigt ein Fahrzeug im feinen Sprühnebel – in Zeitlupe',
+  /** Erster Frame – das Video blendet nahtlos darüber. */
+  poster: { src: '/media/dampf-hygiene-poster.jpg', width: 1280, height: 720 },
+  posterPortrait: { src: '/media/dampf-hygiene-poster-portrait.jpg', width: 720, height: 900 },
+  /** Standbilder (Dampfpistole im Trockendampf) für „Bewegung reduzieren“. */
+  still: { src: '/media/dampf-hygiene-still.jpg', width: 1280, height: 720 },
+  stillPortrait: { src: '/media/dampf-hygiene-still-portrait.jpg', width: 720, height: 900 },
+  alt: 'Trockendampf-Reinigung: Ein verschmutzter Ledersitz wird mit der Dampfpistole gereinigt und mit einem Mikrofasertuch abgewischt',
 } as const;
 
 /** Film einer Leistung: Querformat (Mega-Dropdown, Karte auf Mobile) und Hochformat-Schnitt (Bühne der Leistungs-Sektion). */
@@ -113,6 +116,19 @@ export const handWashFilm = {
   position: '60% 50%',
   alt: 'Handwäsche innen und außen: Pinsel und Mikrofaser im Innenraum, Schaumpinsel am Scheinwerfer und Reifenpflege',
 } as const satisfies ServiceFilm;
+
+/**
+ * Derselbe Film als Hero auf dem Smartphone (< 640 px): eigener Hochformat-Schnitt (608 × 1080, H.264 CRF 25,
+ * 2,1 MB statt 10 MB), der Ausschnitt schwenkt mit dem Motiv – Wählhebel → Schaumpinsel am Scheinwerfer → Reifen
+ * → Lenkrad; Anfang und Ende stehen gleich, damit die Schleife ruhig bleibt. Poster = erster Frame,
+ * Standbild (Schaumpinsel am Scheinwerfer) für „Bewegung reduzieren“.
+ */
+export const handWashHero = {
+  src: '/media/handwaesche-hero.mp4',
+  poster: { src: '/media/handwaesche-hero-poster.jpg', width: 608, height: 1080 },
+  still: { src: '/media/handwaesche-hero-still.jpg', width: 608, height: 1080 },
+  alt: handWashFilm.alt,
+} as const;
 
 /**
  * Innenraum (`Innenraumsaugen&Reinigen.mp4`): Bürstendüse auf perforiertem Leder, dann im Fußraum; 7 s.

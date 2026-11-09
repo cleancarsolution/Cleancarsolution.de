@@ -16,9 +16,9 @@ export const reviews = {
   more: 'Vollständige Rezension ansehen',
   /** Beschriftung des Sliders und seiner Pfeil-Knöpfe. */
   slider: { label: 'Rezensionen auf Google', prev: 'Zurückblättern', next: 'Weiterblättern' },
-  /** Pflichtangabe nach § 5b Abs. 3 UWG: Herkunft und Auswahl der Rezensionen und ob ihre Echtheit geprüft wird. */
+  /** Hinweis unter den Rezensionen: Herkunft und Auswahl der Rezensionen (vgl. § 5b Abs. 3 UWG). */
   notice:
-    'Gezeigt wird eine Auswahl der Rezensionen aus unserem Google-Unternehmensprofil, gekürzt und mit abgekürztem Namen – vollständig lesen Sie sie auf Google. Ob sie von Personen stammen, die unsere Leistungen tatsächlich in Anspruch genommen haben, prüfen wir nicht.',
+    'Gezeigt wird eine Auswahl der Rezensionen aus unserem Google-Unternehmensprofil, gekürzt und mit abgekürztem Namen – vollständig lesen Sie sie auf Google.',
   /** Solange keine Rezensionen geladen sind (lokal ohne Zugangsdaten, vor der Freischaltung durch Google). */
   fallback: 'Was unsere Kunden über uns schreiben, lesen Sie direkt in unserem Google-Profil.',
   read: 'Alle Rezensionen lesen',

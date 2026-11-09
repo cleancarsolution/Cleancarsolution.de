@@ -6,12 +6,10 @@ import { LoopVideoMedia } from '@/components/media/LoopVideoMedia';
 import { useLoopVideo } from '@/components/media/useLoopVideo';
 import { PORTRAIT_QUERY, VideoPoster } from '@/components/media/VideoPoster';
 import { VideoToggle } from '@/components/media/VideoToggle';
-import { Sparkle } from '@/components/ui/Sparkle';
 import { studioFilm, videoLabels } from '@/content/media';
 import { cn } from '@/lib/cn';
 
 interface StudioBandProps {
-  caption: string;
   className?: string;
 }
 
@@ -28,7 +26,7 @@ const SOURCES = [
  * Blende (clip-path), das Bild zieht leicht nach (Parallax ≤ 12 %). Das Video lädt erst kurz vorher und
  * läuft nur, solange es sichtbar ist; Pause/Play unten rechts. Bei „Bewegung reduzieren“: Standbild.
  */
-export function StudioBand({ caption, className }: StudioBandProps) {
+export function StudioBand({ className }: StudioBandProps) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { frameRef, videoRef, video } = useLoopVideo();
@@ -74,11 +72,7 @@ export function StudioBand({ caption, className }: StudioBandProps) {
         <div aria-hidden className="absolute inset-0 bg-grain opacity-[0.06] mix-blend-overlay" />
         <div aria-hidden className="absolute inset-0 ring-1 ring-white/[0.06] ring-inset" />
 
-        <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-6 p-5 sm:p-8 lg:p-10">
-          <span className="flex items-center gap-3 text-eyebrow font-medium text-fg/85 uppercase font-expanded">
-            <Sparkle className="size-2.5 text-sky-400" />
-            {caption}
-          </span>
+        <div className="absolute right-0 bottom-0 p-5 sm:p-8 lg:p-10">
           <VideoToggle
             videoRef={videoRef}
             shouldPlay={video.shouldPlay}
@@ -89,7 +83,7 @@ export function StudioBand({ caption, className }: StudioBandProps) {
             playLabel={videoLabels.play}
             className="bg-ink-950/60"
           />
-        </figcaption>
+        </div>
       </motion.div>
     </figure>
   );

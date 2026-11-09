@@ -5,7 +5,7 @@ import { logoFiles } from '@/components/brand/logo-files';
 import { PartnerEndorsement } from '@/components/partner/PartnerEndorsement';
 import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { ArrowUpRight, Instagram, Mail, Phone, TikTok } from '@/components/ui/icons';
+import { ArrowUpRight, Instagram, Mail, Phone, TikTok, WhatsApp } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { SmartLink } from '@/components/ui/SmartLink';
 import { contact } from '@/content/contact';
@@ -13,7 +13,7 @@ import { faq } from '@/content/faq';
 import { headerCta, legalNav, mainNav, serviceHref } from '@/content/navigation';
 import { cn } from '@/lib/cn';
 import { BackToTop } from './footer/BackToTop';
-import { Wordmark } from './footer/Wordmark';
+import { LogoFinale } from './footer/LogoFinale';
 
 /** Kurze Beschriftungen, die es nur im Footer gibt – alles andere kommt aus `content/` und `@ccs/shared`. */
 const copy = {
@@ -21,6 +21,7 @@ const copy = {
   navigation: 'Navigation',
   legal: 'Rechtliches',
   home: 'zum Seitenanfang',
+  whatsapp: 'WhatsApp',
   credit: { lead: 'Erstellt mit Next.js & Turbopack von', studio: 'Palmer Digital' },
 } as const;
 
@@ -28,6 +29,9 @@ const SOCIAL_ICONS: Record<string, ReactNode> = {
   Instagram: <Instagram className="size-[1.125rem]" />,
   TikTok: <TikTok className="size-4" />,
 };
+
+/** WhatsApp an dieselbe Nummer wie „Anrufen“ (wa.me erwartet sie international, ohne „+“). */
+const WHATSAPP_HREF = `https://wa.me/${primaryPhone.e164.replace(/^\+/, '')}`;
 
 const headingClass = 'text-eyebrow font-medium text-fg-subtle uppercase font-expanded';
 
@@ -47,11 +51,26 @@ function Underlined({ children }: { children: ReactNode }) {
   );
 }
 
-function QuickAction({ href, icon, label, detail }: { href: string; icon: ReactNode; label: string; detail: string }) {
+function QuickAction({
+  href,
+  icon,
+  label,
+  detail,
+  className,
+}: {
+  href: string;
+  icon: ReactNode;
+  label: string;
+  detail: string;
+  className?: string;
+}) {
   return (
     <a
       href={href}
-      className="group/qa inline-flex items-center gap-3 rounded-sm text-[0.9375rem] font-medium text-fg-muted transition-colors duration-300 ease-out-quint outline-offset-4 hover:text-fg"
+      className={cn(
+        'group/qa inline-flex items-center gap-3 rounded-sm text-[0.9375rem] font-medium text-fg-muted transition-colors duration-300 ease-out-quint outline-offset-4 hover:text-fg',
+        className,
+      )}
     >
       <span
         aria-hidden
@@ -67,10 +86,11 @@ function QuickAction({ href, icon, label, detail }: { href: string; icon: ReactN
 
 /**
  * Footer (alle Seiten), schwarz – „Unter einem Dach“.
- * Auftakt: Marke mit Claim und die direkten Wege (Termin, Anrufen, Schreiben) – leicht gehalten, damit er
+ * Auftakt: Marke mit Claim und die direkten Wege (Termin, Anrufen, Schreiben – auf dem Smartphone WhatsApp statt
+ * Schreiben) – leicht gehalten, damit er
  * die Kontakt-Sektion darüber nicht wiederholt, aber auf Seiten ohne sie (Impressum, Datenschutz) trägt.
  * Darunter der Inhouse-Partner als ruhige Empfehlungs-Karte, dann Leistungen, Navigation, Kontakt und Social.
- * Finale: „CLEAN CAR“ in voller Breite aus schwarzem Lack auf der Bodenlinie – Studiolicht gleitet darüber.
+ * Finale: das Logo in voller Breite auf der Bodenlinie, gespiegelt im Boden – Studiolicht gleitet darüber.
  * Zum Schluss Rechtliches, Credit und „Nach oben“.
  */
 export function Footer() {
@@ -114,6 +134,14 @@ export function Footer() {
                   icon={<Mail className="size-[1.125rem]" />}
                   label={faq.quickContact.email}
                   detail={site.email}
+                  className="max-sm:hidden"
+                />
+                <QuickAction
+                  href={WHATSAPP_HREF}
+                  icon={<WhatsApp className="size-4" />}
+                  label={copy.whatsapp}
+                  detail={primaryPhone.display}
+                  className="sm:hidden"
                 />
               </div>
             </div>
@@ -172,7 +200,8 @@ export function Footer() {
             <h2 className={headingClass}>{contact.methods.social}</h2>
             <ul className="mt-6 space-y-4">
               {site.socials.map((social) => (
-                <li key={social.href}>
+                // TikTok erst ab Tablet – auf dem Smartphone nicht
+                <li key={social.href} className={social.label === 'TikTok' ? 'max-sm:hidden' : undefined}>
                   <a
                     href={social.href}
                     target="_blank"
@@ -242,8 +271,8 @@ export function Footer() {
           </Reveal>
         </div>
 
-        {/* ── Finale: Wortmarke auf der Bodenlinie ─────────────────────── */}
-        <Wordmark className="mt-20 sm:mt-24 lg:mt-32" />
+        {/* ── Finale: Logo auf der Bodenlinie ──────────────────────────── */}
+        <LogoFinale className="mt-20 sm:mt-24 lg:mt-32" />
 
         {/* ── Rechtliches · Credit · Nach oben ─────────────────────────── */}
         <div className="flex flex-col gap-5 pt-6 pb-8 text-sm text-fg-subtle sm:pt-7 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:pb-10">

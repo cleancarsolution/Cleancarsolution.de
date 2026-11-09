@@ -45,7 +45,7 @@ export function About() {
 
         <Pillars pillars={about.pillars} className="mt-20 sm:mt-24 lg:mt-36" />
 
-        <StudioBand caption={about.filmCaption} className="mt-20 sm:mt-24 lg:mt-32" />
+        <StudioBand className="mt-20 sm:mt-24 lg:mt-32" />
 
         <Facts facts={about.facts} className="mt-4 sm:mt-6" />
 

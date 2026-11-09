@@ -24,7 +24,7 @@ const WISPS = [
 
 /**
  * 03 — HYGIENE (helle Fläche). Kontrapunkt zur Nacht: hell, klar, frisch.
- * Idee: „Klarsicht“ – das Zeitlupen-Video aus dem Studio liegt links hinter Milchglas, rechts klar;
+ * Idee: „Klarsicht“ – das Trockendampf-Video liegt links hinter Milchglas, rechts klar;
  * beim Hineinscrollen wischt die Trennlinie das Glas frei wie ein Abzieher, danach lässt sie sich ziehen.
  * Die Navy-Karte („Hygiene / Trockendampf“) greift über das Video und erklärt die Wirkung.
  */
