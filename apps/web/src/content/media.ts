@@ -23,25 +23,26 @@ export const bannerFilm = {
 } as const;
 
 /**
- * Eigenes Filmmaterial von Clean Car Solution (Quelle: `Inhouse-Partner-Startseite.mp4`, 10-Bit-Original,
- * Grading: Farbton +15° Richtung Marken-Sky). Encodierung siehe README → Medien.
+ * Studiofilm (`newOne.mp4`, 10-Bit-HEVC, 20 s): Hochdruckreiniger am eingeschäumten Wagen, Mikrofaser im Schaum
+ * am Kühlergrill, Mikrofasertuch auf dem Armaturenbrett; harte Schnitte, Farbton unverändert, als H.264 (CRF 23)
+ * encodiert. Die ersten vier Bilder (eine stehende Totale) sind abgeschnitten – in der Schleife blitzten sie sonst
+ * alle 20 s auf. Der frühere Studiofilm (`hero-*`, Scheinwerfer im Nebel, Quelle `Inhouse-Partner-Startseite.mp4`)
+ * liegt weiter in `/media/`; `hero-poster.jpg` bleibt Vorschaubild für Open Graph und JSON-LD.
  */
-
-/** 6-s-Schleife: Scheinwerfer gehen an, Wasser perlt, Handwäsche im Sprühnebel, Totale des Studios. */
 export const studioFilm = {
   sources: {
-    /** Hochformat-Schnitt (608 × 1080) für Smartphones im Hochformat. */
-    portrait: '/media/hero-portrait.mp4',
-    medium: '/media/hero-720.mp4',
-    large: '/media/hero-1080.mp4',
+    /** Hochformat-Schnitt (608 × 1080) für Smartphones im Hochformat – schwenkt mit Mann, Handschuh und Tuch mit. */
+    portrait: '/media/pflege-portrait.mp4',
+    medium: '/media/pflege-720.mp4',
+    large: '/media/pflege-1080.mp4',
   },
   /** Erster Frame – das Video blendet nahtlos darüber. */
-  poster: { src: '/media/hero-poster.jpg', width: 1920, height: 1080 },
-  posterPortrait: { src: '/media/hero-poster-portrait.jpg', width: 608, height: 1080 },
-  /** Standbilder (Scheinwerfer an) für „Bewegung reduzieren“. */
-  still: { src: '/media/hero-still.jpg', width: 1920, height: 1080 },
-  stillPortrait: { src: '/media/hero-still-portrait.jpg', width: 608, height: 1080 },
-  alt: 'Schwarze Limousine im dunklen, nebligen Studio von Clean Car Solution mit eingeschalteten LED-Scheinwerfern',
+  poster: { src: '/media/pflege-poster.jpg', width: 1920, height: 1080 },
+  posterPortrait: { src: '/media/pflege-poster-portrait.jpg', width: 608, height: 1080 },
+  /** Standbilder (Hochdruckreiniger am eingeschäumten Wagen) für „Bewegung reduzieren“. */
+  still: { src: '/media/pflege-still.jpg', width: 1920, height: 1080 },
+  stillPortrait: { src: '/media/pflege-still-portrait.jpg', width: 608, height: 1080 },
+  alt: 'Handwäsche im Studio: Der eingeschäumte Wagen wird mit dem Hochdruckreiniger abgespült und am Kühlergrill mit Mikrofaser gewaschen, danach wird das Armaturenbrett mit einem Mikrofasertuch gereinigt',
 } as const;
 
 /**
@@ -77,8 +78,9 @@ export interface ServiceFilm extends Required<PosterSet> {
 }
 
 /*
- * Leistungsfilme: eigenes Material aus demselben Dreh (10-Bit-Originale), jeweils mit 1 s Überblendung
- * Ende → Anfang zur nahtlosen Schleife; der Hochformat-Schnitt (720 × 1080, 2 : 3) schwenkt mit dem Motiv mit.
+ * Leistungsfilme: eigenes Material aus demselben Dreh wie der frühere Studiofilm (10-Bit-Originale), jeweils mit
+ * 1 s Überblendung Ende → Anfang zur nahtlosen Schleife; der Hochformat-Schnitt (720 × 1080, 2 : 3) schwenkt mit
+ * dem Motiv mit.
  */
 
 /** Lackpolitur (`Lackpolitur.mp4`, Grading +15°): Poliermaschine auf dunklem Lack, langsame Kamerafahrt; 9 s. */

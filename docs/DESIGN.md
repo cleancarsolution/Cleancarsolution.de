@@ -124,9 +124,11 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
     mit dem Motiv), Poster `banner-poster(-portrait).jpg` (= erster Frame), Standbild `banner-still(-portrait).jpg`
     (für reduzierte Bewegung). Läuft im Hero ab Tablet; auf dem Smartphone (< 640 px) läuft dort der
     Handwäsche-Film als eigener Hochformat-Schnitt `handwaesche-hero.mp4` (+ `-poster`/`-still.jpg`).
-  - Studiofilm `/media/hero-1080.mp4`, `hero-720.mp4`, `hero-portrait.mp4` (Hochformat-Schnitt), Poster
-    `hero-poster(-portrait).jpg` (= erster Frame), Standbild `hero-still(-portrait).jpg` (für reduzierte Bewegung).
-    Läuft im Filmband von „Über uns“ und auf der Bühne des Mega-Dropdowns.
+  - Studiofilm `/media/pflege-1080.mp4`, `pflege-720.mp4`, `pflege-portrait.mp4` (Hochformat-Schnitt, schwenkt mit
+    dem Motiv), Poster `pflege-poster(-portrait).jpg` (= erster Frame), Standbild `pflege-still(-portrait).jpg` (für
+    reduzierte Bewegung). Läuft im Filmband von „Über uns“ und auf der Bühne des Mega-Dropdowns. Der frühere
+    Studiofilm `hero-*` liegt weiter in `/media/`, ist aber nicht eingebunden – nur `hero-poster.jpg` bleibt
+    Vorschaubild (Open Graph, JSON-LD).
   - Trockendampf-Film `/media/dampf-hygiene-720.mp4`, `dampf-hygiene-portrait.mp4` (4 : 5), Poster
     `dampf-hygiene-poster(-portrait).jpg`, Standbild `dampf-hygiene-still(-portrait).jpg` – Hygiene-Sektion auf allen
     Breiten. Die frühere Sprühnebel-Zeitlupe `hygiene-*` liegt weiter in `/media/`, ist aber nicht eingebunden.
