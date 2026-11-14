@@ -2,7 +2,7 @@
 
 import { stagger, useAnimate } from 'motion/react';
 import Image from 'next/image';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 import { EASE_IN_OUT_QUART, EASE_OUT_EXPO } from '@/lib/motion';
 import { useHero } from './HeroStage';
@@ -14,7 +14,12 @@ export interface BrandLogo {
   src: string;
   width: number;
   height: number;
+  /** Höhe relativ zur Logoreihe (Standard 1) – breite oder sehr kräftige Marken kleiner, damit sie nicht größer wirken. */
+  scale?: number;
 }
+
+/** Höchste Logohöhe in px (Reihe ab xl, 5,5rem) – Grundlage für `sizes`. */
+const LOGO_MAX_HEIGHT = 88;
 
 export interface ProductLine {
   /** Auftakt, klein wie die Eyebrow. */
@@ -253,7 +258,7 @@ export function HeroCopy({ children, scene, films, line, className }: HeroCopyPr
           ))}
         </p>
         {line.logos && line.logos.length > 0 ? (
-          <ul className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-4 sm:mt-7 lg:gap-x-10">
+          <ul className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-4 [--logo-h:3.5rem] sm:mt-7 sm:[--logo-h:4rem] lg:gap-x-10 lg:[--logo-h:5rem] xl:[--logo-h:5.5rem]">
             {line.logos.map((logo) => (
               <li key={logo.src} data-line-logo style={{ opacity: 0 }}>
                 <Image
@@ -261,9 +266,11 @@ export function HeroCopy({ children, scene, films, line, className }: HeroCopyPr
                   alt={logo.name}
                   width={logo.width}
                   height={logo.height}
-                  sizes="80px"
+                  // größte Breite (ab xl), auf 10 px aufgerundet
+                  sizes={`${Math.ceil((LOGO_MAX_HEIGHT * (logo.scale ?? 1) * logo.width) / logo.height / 10) * 10}px`}
                   quality={90}
-                  className="h-14 w-auto sm:h-16 lg:h-20 xl:h-[5.5rem]"
+                  className="h-[calc(var(--logo-h)*var(--logo-scale,1))] w-auto"
+                  style={logo.scale ? ({ '--logo-scale': logo.scale } as CSSProperties) : undefined}
                 />
               </li>
             ))}

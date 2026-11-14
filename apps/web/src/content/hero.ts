@@ -21,10 +21,27 @@ export const hero = {
     /** Das eine Wort mit Verlaufstext. */
     accent: 'professionellen',
     /**
-     * Herstellerlogos in einer Reihe (erscheinen nacheinander) – weiß auf transparent, eng beschnitten, unter
-     * `/images/marken/` (docs/DESIGN.md §7). Weitere Logos einfach anhängen.
+     * Herstellerlogos in einer Reihe (erscheinen nacheinander) – hell auf transparent, eng beschnitten, unter
+     * `/images/marken/` (docs/DESIGN.md §7). Weitere Logos einfach anhängen. `scale`: Höhe relativ zur Reihe –
+     * breite oder sehr kräftige Marken kleiner, damit sie neben den Siegeln nicht größer wirken.
      */
-    logos: [{ name: 'ServFaces', src: '/images/marken/servfaces.png', width: 285, height: 340 }],
+    logos: [
+      { name: 'ServFaces', src: '/images/marken/servfaces.png', width: 285, height: 340 },
+      {
+        name: 'Koch-Chemie',
+        src: '/images/marken/koch-chemie.png',
+        width: 1199,
+        height: 242,
+        scale: 0.6,
+      },
+      {
+        name: 'Labocosmetica #Derma Cleaner',
+        src: '/images/marken/labocosmetica-derma.png',
+        width: 1126,
+        height: 1019,
+      },
+      { name: '3D', src: '/images/marken/3d.png', width: 811, height: 497, scale: 0.5 },
+    ],
   },
   primaryCta: { label: 'Termin anfragen', href: '/#kontakt' },
   secondaryCta: { label: 'Leistungen entdecken', href: '/#leistungen' },

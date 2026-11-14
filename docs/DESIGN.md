@@ -101,7 +101,7 @@ Regeln:
 | `media/*`      | Schleifen-Videos im Seitenfluss: `useLoopVideo` (lädt kurz vor Sichtbarkeit, spielt nur sichtbar, respektiert „Bewegung reduzieren“/Datensparmodus), `LoopVideoMedia` (Poster + Video), `VideoPoster` (Art Direction, Standbild bei reduzierter Bewegung), `VideoToggle` (Pause/Play mit Fortschrittsring) |
 | `partner/*`    | Inhouse-Partner PKW-Schmiede als ruhige Empfehlung, nie als Werbefläche: schwarze Karten mit Haarlinie, ohne Schein. `PartnerEndorsement` (Footer: Logo · Nutzen + Leistungen · Weg zur Website, ganze Karte klickbar), `PartnerPromo` (Mega-Dropdown, kompakt im Mobile-Menü), `PartnerLogoAnimated` (Zahnrad dreht sich ein; `spin={false}` = steht still und rückt beim Überfahren der Karte einen Zahn weiter); Texte in `content/partner.ts` |
 | `reviews/*`    | Kundenstimmen: `RatingLights` (Sterne der Gesamtnote, schalten sich beim Hineinscrollen nacheinander ein; Bruchteile leuchten anteilig), `ReviewSlider` (Rezensionen im `SnapSlider`) |
-| `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioPrice` (Chrom-Ziffern im Scheinwerferkegel mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductSlider` (Produkte im Slider wie im Einblick: Kacheln 4 : 5 zwischen Haarlinien, Studiolicht von oben, das Produkt steht auf der Bodenlinie und spiegelt sich), `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
+| `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioPrice` (Chrom-Ziffern im Scheinwerferkegel mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
 
 Hilfen: `lib/scroll.ts` (Lenis, `scrollToId`, `lockScroll`), `lib/events.ts` (`requestService(slug)` wählt im
 Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauern), `lib/cn.ts`.
@@ -157,12 +157,14 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
 - Jedes Video: stumm, Schleife, lädt erst kurz vor Sichtbarkeit, pausiert außerhalb des Viewports, Pause/Play sichtbar.
 - Overlays: Verläufe aus `ink-950` für Lesbarkeit, feines Korn (`bg-grain`, Deckkraft 0,05–0,1).
 - Immer `next/image` mit korrektem `sizes`; Hero-Medien mit Priorität, alles andere lazy.
-- Produktfotos (`/images/produkte/`, Liste in `content/offer.ts` → `products`): freigestellt, auf die deckende Fläche
-  zugeschnitten und gleich hoch auf 880 × 1000 px gebracht, unten bündig – so stehen alle gleich groß auf derselben
-  Bodenlinie. Neue Produkte genauso aufbereiten.
-- Herstellerlogos (`/images/marken/`, Liste in `content/hero.ts` → `productLine.logos`): weiß auf transparent, eng auf
-  das Logo beschnitten – sie stehen über dem dunklen Banner-Film. `servfaces.png` ist aus dem Etikettfoto `SF.png`
-  freigestellt (Helligkeit als Deckkraft). Neue Logos genauso aufbereiten und anhängen; sie erscheinen nacheinander.
+- Herstellerlogos (`/images/marken/`, Liste in `content/hero.ts` → `productLine.logos`): hell auf transparent, eng auf
+  das Logo beschnitten (4 px Rand) – sie stehen über dem dunklen Banner-Film. Dunkle Schrift wird weiß, Markenfarben
+  bleiben. Reihenfolge: ServFaces, Koch-Chemie, Labocosmetica #Derma Cleaner, 3D. `servfaces.png` ist aus dem
+  Etikettfoto `SF.png` freigestellt (Helligkeit als Deckkraft); `koch-chemie.png` kommt aus `KochChemie_Experts.png`
+  (schon transparent): Navy-Schriftzug weiß, Gold und Orange unverändert; `labocosmetica-derma.png` (Gold) und
+  `3d.png` (Grün) aus `Derma.png`/`3d.png` nur beschnitten. Breite oder sehr kräftige Marken bekommen `scale` (Höhe
+  relativ zur Reihe: Koch-Chemie 0,6, 3D 0,5), damit sie neben den Siegeln nicht größer wirken. Neue Logos genauso
+  aufbereiten und anhängen; sie erscheinen nacheinander.
 
 ## 8. Startseite – Sektionen
 
@@ -193,8 +195,7 @@ Die eine Idee je Sektion (Auswahl):
 - **Preise:** „Studiolicht“ – das Angebot ist ein Paneel aus schwarzem Lack. Beim Hineinscrollen flackert ein
   Scheinwerfer auf: Sein Lichtkegel mit feinem Nebel fällt schräg auf die Chrom-Ziffern und schwenkt mit dem
   Zeiger, am Boden liegt ein Lichtfleck; die Ziffern fangen ein Glanzlicht und spiegeln sich im Boden. Darunter
-  die übrigen Leistungen als ruhige Preisliste, dann die Produkte im Slider („Wir arbeiten mit hochqualitativen
-  Produkten“) und der Platz für die eigenen Produkte.
+  die übrigen Leistungen als ruhige Preisliste und der Platz für die eigenen Produkte.
 - **Kundenstimmen:** Die Gesamtnote aus dem Google-Profil als Lichtleiste – beim Hineinscrollen schalten sich die
   fünf Sterne nacheinander ein (kurzer Einschalt-Glanz, dann Sterngelb wie bei Google).
   Darunter bis zu zehn der neuesten Rezensionen mit Text im Slider zwischen Haarlinien (wie im Einblick), Name
