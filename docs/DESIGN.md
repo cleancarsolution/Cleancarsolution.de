@@ -101,7 +101,7 @@ Regeln:
 | `media/*`      | Schleifen-Videos im Seitenfluss: `useLoopVideo` (lädt kurz vor Sichtbarkeit, spielt nur sichtbar, respektiert „Bewegung reduzieren“/Datensparmodus), `LoopVideoMedia` (Poster + Video), `VideoPoster` (Art Direction, Standbild bei reduzierter Bewegung), `VideoToggle` (Pause/Play mit Fortschrittsring) |
 | `partner/*`    | Inhouse-Partner PKW-Schmiede als ruhige Empfehlung, nie als Werbefläche: schwarze Karten mit Haarlinie, ohne Schein. `PartnerEndorsement` (Footer: Logo · Nutzen + Leistungen · Weg zur Website, ganze Karte klickbar), `PartnerPromo` (Mega-Dropdown, kompakt im Mobile-Menü), `PartnerLogoAnimated` (Zahnrad dreht sich ein; `spin={false}` = steht still und rückt beim Überfahren der Karte einen Zahn weiter); Texte in `content/partner.ts` |
 | `reviews/*`    | Kundenstimmen: `RatingLights` (Sterne der Gesamtnote, schalten sich beim Hineinscrollen nacheinander ein; Bruchteile leuchten anteilig), `ReviewSlider` (Rezensionen im `SnapSlider`) |
-| `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioPrice` (Chrom-Ziffern im Scheinwerferkegel mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
+| `offer/*`      | Preis-Sektion „Studiolicht“: `LacquerPanel` (Lackpaneel, Licht an beim Hineinscrollen, Zeiger-Parallaxe), `StudioPrice` (Chrom-Ziffern im Scheinwerferkegel mit Bodenspiegelung), `QuoteList` (Preisliste der individuell kalkulierten Leistungen), `ServiceRequestLink`, `ProductSlider` (Produkte im Slider wie im Einblick: Kacheln 4 : 5 zwischen Haarlinien, Studiolicht von oben, das Produkt steht auf der Bodenlinie und spiegelt sich), `ProductBanner` (leerer Platz für eigene Produkte – Inhalt vom Kunden) |
 
 Hilfen: `lib/scroll.ts` (Lenis, `scrollToId`, `lockScroll`), `lib/events.ts` (`requestService(slug)` wählt im
 Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauern), `lib/cn.ts`.
@@ -119,26 +119,36 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
 ## 7. Bildsprache
 
 - **Eigenes Material zuerst**: Standbilder aus dem Studio-Video (`/images/frames/*`, gegradet).
-- Video (Pfade zentral in `content/media.ts`):
-  - Banner-Film `/media/banner-1080.mp4`, `banner-720.mp4`, `banner-portrait.mp4` (Hochformat-Schnitt, schwenkt
-    mit dem Motiv), Poster `banner-poster(-portrait).jpg` (= erster Frame), Standbild `banner-still(-portrait).jpg`
-    (für reduzierte Bewegung). Läuft im Hero ab Tablet; auf dem Smartphone (< 640 px) läuft dort der
-    Handwäsche-Film als eigener Hochformat-Schnitt `handwaesche-hero.mp4` (+ `-poster`/`-still.jpg`).
-  - Studiofilm `/media/pflege-1080.mp4`, `pflege-720.mp4`, `pflege-portrait.mp4` (Hochformat-Schnitt, schwenkt mit
-    dem Motiv), Poster `pflege-poster(-portrait).jpg` (= erster Frame), Standbild `pflege-still(-portrait).jpg` (für
-    reduzierte Bewegung). Läuft im Filmband von „Über uns“ und auf der Bühne des Mega-Dropdowns. Der frühere
-    Studiofilm `hero-*` liegt weiter in `/media/`, ist aber nicht eingebunden – nur `hero-poster.jpg` bleibt
+- Video (Pfade zentral in `content/media.ts`). Alles unter `/media/` wird ein Jahr lang als unveränderlich gecacht
+  (`next.config.ts`) – neues Material immer unter neuem Dateinamen ablegen (z. B. `banner3-*`), nie eine Datei
+  überschreiben, sonst zeigen Browser und Bildoptimierung weiter die alte:
+  - Banner-Film `/media/banner3-1080.mp4`, `banner3-720.mp4`, `banner3-portrait.mp4` (Hochformat-Schnitt, schwenkt
+    mit dem Motiv), Poster `banner3-poster(-portrait).jpg` (= erster Frame), Standbild `banner3-still(-portrait).jpg`
+    (für reduzierte Bewegung) – Porsche-Dreh mit eingeblendeten Produkten (Quelle `New_Edited_Product_Banner.mp4`).
+    Solange die Produkte im Bild sind (`bannerFilm.productScene`, 1,2–6,2 s der Schleife = Sekunde 3–8 im
+    Original), ersetzt `hero/HeroCopy.tsx` Eyebrow, Headline, Lead und CTAs durch die Produktzeile
+    (`hero.productLine`, „… professionellen Produkten von:“), ab 3 s mit den Herstellerlogos darunter
+    (`productLine.logos`), gekoppelt an die Filmzeit. Läuft im Hero ab Tablet; auf dem Smartphone (< 640 px) läuft dort der Handwäsche-Film als eigener
+    Hochformat-Schnitt `handwaesche-hero.mp4` (+ `-poster`/`-still.jpg`). Die früheren Banner-Filme `banner2-*` und
+    `banner-*` liegen weiter in `/media/`, sind aber nicht eingebunden.
+  - Studiofilm `/media/pflege2-1080.mp4`, `pflege2-720.mp4`, `pflege2-portrait.mp4` (Hochformat-Schnitt, schwenkt
+    mit dem Motiv), Poster `pflege2-poster(-portrait).jpg` (= erster Frame), Standbild `pflege2-still(-portrait).jpg`
+    (für reduzierte Bewegung) – Quelle `remaked_video.mp4` (ohne sichtbaren Mitarbeiter). Läuft im Filmband von
+    „Über uns“ und auf der Bühne des Mega-Dropdowns. Die vorige Fassung `pflege-*` (Quelle `newOne.mp4`) und der
+    frühere Studiofilm `hero-*` liegen weiter in `/media/`, sind aber nicht eingebunden – nur `hero-poster.jpg` bleibt
     Vorschaubild (Open Graph, JSON-LD).
   - Trockendampf-Film `/media/dampf-hygiene-720.mp4`, `dampf-hygiene-portrait.mp4` (4 : 5), Poster
     `dampf-hygiene-poster(-portrait).jpg`, Standbild `dampf-hygiene-still(-portrait).jpg` – Hygiene-Sektion auf allen
     Breiten. Die frühere Sprühnebel-Zeitlupe `hygiene-*` liegt weiter in `/media/`, ist aber nicht eingebunden.
   - Leistungsfilme (`serviceFilms`) je `/media/<film>-720.mp4` + `<film>-portrait.mp4` (2 : 3, schwenkt mit
-    dem Motiv): Lackpolitur → Fahrzeugaufbereitung, Handwäsche (`handwaesche-1080.mp4`, noch unbearbeitet für beide
-    Formate) → Handwäsche, Innenraum → Innen & Außen, Leder → Polster & Leder,
+    dem Motiv): Lackpolitur (`lackpolitur2`) → Fahrzeugaufbereitung, Handwäsche (`handwaesche2`, Quelle
+    `new_one_Remaked.mp4`, schon im Original nahtlose Schleife) → Handwäsche, Innenraum → Innen & Außen, Leder (`leder2`) → Polster & Leder,
     Lackreparatur → Smart Repair, Verdeck → Cabrioverdeck. Im Mega-Dropdown ersetzt der Film den Studiofilm – als Breitband (3 : 1) in voller
     Breite oben auf der Bühne, damit man ihn über dem Text erkennt; `position` (object-position) legt je Film
     fest, welcher Streifen zu sehen ist (y) bzw. welcher Ausschnitt auf der Mobile-Karte (x). In der
     Leistungs-Sektion ersetzt der Film das Foto (Desktop-Bühne: Hochformat-Schnitt, Mobile-Karte: Querformat).
+    Die früheren `lackpolitur-*`, `leder-*` und `handwaesche-1080.mp4` (+ `handwaesche-poster/-still*.jpg`) liegen
+    weiter in `/media/`, sind aber nicht eingebunden.
   - Reels (Einblick, `content/gallery.ts` → `feed.posts`): Kachel (4 : 5) mit Vorschau aus der Instagram-Einbettung
     (lädt von selbst kurz vor dem Slider, auf das Bild zugeschnitten, mit Instagrams eigenem Play-Zeichen, darunter
     auf jeder Kachel „Auf Instagram ansehen“ in Instagrams weißer Schrift; bei Reels, die Instagram eingebettet nicht
@@ -147,6 +157,12 @@ Kontaktformular die Leistung vor und scrollt hin), `lib/motion.ts` (Easing/Dauer
 - Jedes Video: stumm, Schleife, lädt erst kurz vor Sichtbarkeit, pausiert außerhalb des Viewports, Pause/Play sichtbar.
 - Overlays: Verläufe aus `ink-950` für Lesbarkeit, feines Korn (`bg-grain`, Deckkraft 0,05–0,1).
 - Immer `next/image` mit korrektem `sizes`; Hero-Medien mit Priorität, alles andere lazy.
+- Produktfotos (`/images/produkte/`, Liste in `content/offer.ts` → `products`): freigestellt, auf die deckende Fläche
+  zugeschnitten und gleich hoch auf 880 × 1000 px gebracht, unten bündig – so stehen alle gleich groß auf derselben
+  Bodenlinie. Neue Produkte genauso aufbereiten.
+- Herstellerlogos (`/images/marken/`, Liste in `content/hero.ts` → `productLine.logos`): weiß auf transparent, eng auf
+  das Logo beschnitten – sie stehen über dem dunklen Banner-Film. `servfaces.png` ist aus dem Etikettfoto `SF.png`
+  freigestellt (Helligkeit als Deckkraft). Neue Logos genauso aufbereiten und anhängen; sie erscheinen nacheinander.
 
 ## 8. Startseite – Sektionen
 
@@ -177,17 +193,19 @@ Die eine Idee je Sektion (Auswahl):
 - **Preise:** „Studiolicht“ – das Angebot ist ein Paneel aus schwarzem Lack. Beim Hineinscrollen flackert ein
   Scheinwerfer auf: Sein Lichtkegel mit feinem Nebel fällt schräg auf die Chrom-Ziffern und schwenkt mit dem
   Zeiger, am Boden liegt ein Lichtfleck; die Ziffern fangen ein Glanzlicht und spiegeln sich im Boden. Darunter
-  die übrigen Leistungen als ruhige Preisliste, dann Produktmarken und der Platz für die eigenen Produkte.
+  die übrigen Leistungen als ruhige Preisliste, dann die Produkte im Slider („Wir arbeiten mit hochqualitativen
+  Produkten“) und der Platz für die eigenen Produkte.
 - **Kundenstimmen:** Die Gesamtnote aus dem Google-Profil als Lichtleiste – beim Hineinscrollen schalten sich die
   fünf Sterne nacheinander ein (kurzer Einschalt-Glanz, dann Sterngelb wie bei Google).
   Darunter bis zu zehn der neuesten Rezensionen mit Text im Slider zwischen Haarlinien (wie im Einblick), Name
   gekürzt („Max M.“), Originalwortlaut; am Ende der Hinweis nach § 5b Abs. 3 UWG und die Wege zu Google.
   Ohne Daten nur Überschrift und Links.
 - **Footer:** „Unter einem Dach“ – Marke mit direkten Wegen (Termin, Anrufen, Schreiben; auf dem Smartphone
-  WhatsApp statt Schreiben), der Inhouse-Partner als Empfehlungs-Karte, Linkspalten (TikTok erst ab Tablet, wie
-  im Mobile-Menü); Finale: das Logo in voller Breite auf der Bodenlinie (ab sm nebeneinander,
+  WhatsApp statt Schreiben), der Inhouse-Partner als Empfehlungs-Karte, Linkspalten (Social nur Instagram, ohne
+  TikTok); Finale: das Logo in voller Breite auf der Bodenlinie (ab sm nebeneinander,
   auf dem Smartphone gestapelt), gespiegelt im glänzenden Boden – die Teile kommen nacheinander, dann gleitet
-  einmal Studiolicht darüber. Ganz unten Rechtliches und „Erstellt mit Next.js & Turbopack von Palmer Digital“.
+  einmal Studiolicht darüber. Ganz unten Rechtliches und „Erstellt mit Next.js & Turbopack von Palmer Digital“
+  (Link auf www.palmer-digital.de, neuer Tab).
 
 ## 9. Kein „AI-Slop“ – harte Regeln
 

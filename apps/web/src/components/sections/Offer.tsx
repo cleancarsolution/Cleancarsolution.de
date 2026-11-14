@@ -1,6 +1,5 @@
-import { site } from '@ccs/shared';
+import Image from 'next/image';
 import { offer } from '@/content/offer';
-import { Brands } from '@/components/sections/about/Brands';
 import { Container } from '@/components/ui/Container';
 import { Eyebrow } from '@/components/ui/Eyebrow';
 import { Check } from '@/components/ui/icons';
@@ -10,6 +9,7 @@ import { TwoTone } from '@/components/ui/TwoTone';
 import { cn } from '@/lib/cn';
 import { LacquerPanel } from './offer/LacquerPanel';
 import { ProductBanner } from './offer/ProductBanner';
+import { ProductSlider } from './offer/ProductSlider';
 import { QuoteList } from './offer/QuoteList';
 import { ServiceRequestLink } from './offer/ServiceRequestLink';
 import { StudioPrice } from './offer/StudioPrice';
@@ -26,7 +26,7 @@ function sentences(text: string): string[] {
  * auf – sein Lichtkegel mit feinem Nebel fällt schräg auf die „89“, die Chrom-Ziffern fangen das Licht, ein
  * Glanzlicht legt sich darauf, am Boden liegt ein Lichtfleck und der Preis spiegelt sich darin.
  * Mit der Maus schwenkt der Kegel mit, das Glanzlicht folgt dem Blickwinkel. Darunter die übrigen Leistungen als
- * ruhige Preisliste, zum Schluss die Produktmarken und der Platz für die eigenen Produkte (`ProductBanner`).
+ * ruhige Preisliste, zum Schluss die Produkte im Slider und der Platz für die eigenen Produkte (`ProductBanner`).
  * Signalrot trägt nur das Angebots-Badge.
  */
 export function Offer() {
@@ -63,12 +63,65 @@ export function Offer() {
 
         <QuoteList className="mt-24 sm:mt-28 lg:mt-36" />
 
-        <Reveal className="mt-20 lg:mt-28" amount={0.6}>
-          <Brands label={offer.brandsLabel} brands={site.brands} className="border-t border-line pt-8" />
+        <Reveal className="mt-20 lg:mt-28" y={32} amount={0.2}>
+          <Products />
         </Reveal>
         <ProductBanner />
       </Container>
     </section>
+  );
+}
+
+/* ── Die Produkte: Slider ─────────────────────────────────────────────────── */
+
+/** ~1,6 Kacheln auf dem Smartphone, ~2,6 ab sm, ~3,6 ab lg, ~4,2 ab xl – die angeschnittene nächste zeigt, dass es weitergeht. */
+const PRODUCT_SLIDE = 'w-[62%] sm:w-[38%] lg:w-[28%] xl:w-[24%]';
+/** Breite der Bildfläche (76 % der Kachel) – danach wählt der Browser die Bildgröße. */
+const PRODUCT_SIZES = '(min-width: 1440px) 250px, (min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 640px) 29vw, 47vw';
+
+/**
+ * „Wir arbeiten mit hochqualitativen Produkten“: alle Produkte gleich groß im Slider. Jede Kachel (4 : 5) ist ein
+ * kleines Studio – Licht von oben, das Produkt steht auf der Bodenlinie und spiegelt sich im glänzenden Boden.
+ */
+function Products() {
+  const p = offer.products;
+
+  return (
+    <div className="border-t border-line pt-8 lg:pt-10">
+      <h3 id="preise-produkte-title" className="text-display-sm font-medium text-balance">
+        {p.title}
+      </h3>
+      <div className="mt-8 lg:mt-10">
+        <ProductSlider labelledBy="preise-produkte-title" controls={p.controls}>
+          {p.items.map((item, i) => (
+            <li key={item.src} className={cn('shrink-0 snap-start bg-ink-950', PRODUCT_SLIDE)}>
+              <div className="relative isolate aspect-[4/5] overflow-hidden">
+                {/* Studiolicht von oben, Lichtfleck und Kante des Bodens, feines Korn */}
+                <span aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(80%_62%_at_50%_0%,rgb(132_208_250/0.11),transparent_72%)]" />
+                <span aria-hidden className="absolute inset-x-0 top-[80%] bottom-0 -z-10 bg-[linear-gradient(180deg,rgb(255_255_255/0.035),transparent)]" />
+                <span aria-hidden className="absolute inset-x-[16%] top-[73%] -z-10 h-[14%] bg-[radial-gradient(closest-side,rgb(132_208_250/0.16),transparent)]" />
+                <span aria-hidden className="absolute inset-x-[8%] top-[80%] -z-10 h-px bg-[linear-gradient(90deg,transparent,rgb(255_255_255/0.14),transparent)]" />
+                <span aria-hidden className="absolute inset-0 -z-10 bg-grain opacity-[0.05]" />
+
+                <span aria-hidden className="absolute top-4 left-5 font-mono text-[0.6875rem] text-fg-subtle tabular">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                <div className="absolute inset-x-[12%] top-[12%] bottom-[20%]">
+                  <Image src={item.src} alt={item.alt} fill sizes={PRODUCT_SIZES} quality={80} className="object-contain object-bottom" />
+                </div>
+                {/* Spiegelung im glänzenden Boden – dasselbe Bild, gespiegelt und nach unten ausgeblendet */}
+                <div aria-hidden className="absolute inset-x-[12%] top-[80%] h-[68%] [mask-image:linear-gradient(180deg,rgb(0_0_0/0.3),transparent_26%)]">
+                  <div className="absolute inset-0 -scale-y-100">
+                    <Image src={item.src} alt="" fill sizes={PRODUCT_SIZES} quality={80} className="object-contain object-bottom" />
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ProductSlider>
+      </div>
+    </div>
   );
 }
 

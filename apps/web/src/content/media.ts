@@ -1,47 +1,76 @@
 import type { ServiceSlug } from '@ccs/shared';
 import type { PosterSet } from '@/components/media/VideoPoster';
 
+/*
+ * Alles unter /media/ wird ein Jahr lang als unveränderlich gecacht (next.config.ts) – von Browsern, CDN und der
+ * Bildoptimierung. Neues Material deshalb immer unter neuem Dateinamen ablegen (z. B. banner3-*), nie eine
+ * bestehende Datei überschreiben, sonst bleibt die alte sichtbar.
+ */
+
 /**
- * Hero-Banner (`NewBanner_Longer.mp4`, KI-generiert): Handwäsche mit dem Hochdruckreiniger im nebligen Studio –
- * Heck, Kamerafahrt zur Heckscheibe, Kühlergrill, Front im Gegenlicht; 17,6-s-Schleife mit harten Schnitten.
- * Ausschnitt oberhalb der Kennzeichnung „AI generated“ unten rechts, Farbton unverändert (README → Medien).
+ * Hero-Banner (`New_Edited_Product_Banner.mp4`, 10-Bit-HEVC, 17 s): derselbe Dreh wie die vorige Fassung – ein
+ * dunkler Porsche im nebligen Studio: Front mit Scheinwerfern, Schaum in Nahaufnahme, eingeschäumte Seite mit
+ * Spiegel, Heck mit Wappen beim Abspülen, Mikrofaser auf der Haube, Poliermaschine –, neu mit eingeblendeten
+ * Produkten (3D One, Koch-Chemie, Labocosmetica, ServFaces): Sie fliegen nach gut 1 s vor der Front ein und
+ * verschwinden nach gut 6 s an der Seite wieder. 15,25-s-Schleife mit harten Schnitten. Der schwarze Vorlauf
+ * (1,8 s) ist abgeschnitten, volles Bild ohne Kennzeichnung, Farbton unverändert, als H.264 (CRF 23) encodiert.
+ * Die früheren Fassungen (`banner2-*`, Quelle `Client_Wish_Banner.mp4`, und `banner-*`, Quelle
+ * `NewBanner_Longer.mp4`) liegen weiter in `/media/`, sind aber nicht eingebunden.
  */
 export const bannerFilm = {
   sources: {
-    /** Hochformat-Schnitt (608 × 1080, schwenkt mit dem Motiv) für Smartphones im Hochformat. */
-    portrait: '/media/banner-portrait.mp4',
-    medium: '/media/banner-720.mp4',
-    large: '/media/banner-1080.mp4',
+    /**
+     * Hochformat-Schnitt (608 × 1080, schwenkt mit dem Motiv) für Tablets im Hochformat; solange die Produkte im
+     * Bild sind, steht er mittig auf der Gruppe – die äußeren Flaschen sind dabei angeschnitten.
+     */
+    portrait: '/media/banner3-portrait.mp4',
+    medium: '/media/banner3-720.mp4',
+    large: '/media/banner3-1080.mp4',
   },
-  /** Erster Frame – das Video blendet nahtlos darüber. */
-  poster: { src: '/media/banner-poster.jpg', width: 1920, height: 1080 },
-  posterPortrait: { src: '/media/banner-poster-portrait.jpg', width: 608, height: 1080 },
-  /** Standbilder für „Bewegung reduzieren“: Front im Gegenlicht bzw. (Hochformat) Handwäsche mit dem Strahlrohr. */
-  still: { src: '/media/banner-still.jpg', width: 1920, height: 1080 },
-  stillPortrait: { src: '/media/banner-still-portrait.jpg', width: 608, height: 1080 },
-  alt: 'Eine dunkle Limousine wird im nebligen Studio von Hand mit dem Hochdruckreiniger gewaschen',
+  /** Erster Frame (Front mit Scheinwerfern, noch ohne Produkte) – das Video blendet nahtlos darüber. */
+  poster: { src: '/media/banner3-poster.jpg', width: 1920, height: 1080 },
+  posterPortrait: { src: '/media/banner3-poster-portrait.jpg', width: 608, height: 1080 },
+  /**
+   * Standbilder für „Bewegung reduzieren“: die vier Produkte vor der Front mit Scheinwerfern bzw. (Hochformat)
+   * Heck mit Wappen beim Abspülen.
+   */
+  still: { src: '/media/banner3-still.jpg', width: 1920, height: 1080 },
+  stillPortrait: { src: '/media/banner3-still-portrait.jpg', width: 608, height: 1080 },
+  /**
+   * Produktszene in Sekunden der Schleife: Solange die Produkte im Bild sind, steht im Hero statt des Hero-Texts
+   * die Produktzeile (`hero.productLine`), ab `logos` zusätzlich die Herstellerlogos darunter. Im Original sind das
+   * Sekunde 3 bis 8 – die Web-Fassung beginnt ohne den schwarzen Vorlauf 1,8 s später.
+   */
+  productScene: { start: 1.2, logos: 3, end: 6.2 },
+  alt: 'Ein dunkler Porsche wird im nebligen Studio von Hand aufbereitet: eingeschäumt, abgespült, mit Mikrofaser getrocknet und poliert – davor die verwendeten Pflegeprodukte',
 } as const;
 
 /**
- * Studiofilm (`newOne.mp4`, 10-Bit-HEVC, 20 s): Hochdruckreiniger am eingeschäumten Wagen, Mikrofaser im Schaum
- * am Kühlergrill, Mikrofasertuch auf dem Armaturenbrett; harte Schnitte, Farbton unverändert, als H.264 (CRF 23)
- * encodiert. Die ersten vier Bilder (eine stehende Totale) sind abgeschnitten – in der Schleife blitzten sie sonst
- * alle 20 s auf. Der frühere Studiofilm (`hero-*`, Scheinwerfer im Nebel, Quelle `Inhouse-Partner-Startseite.mp4`)
- * liegt weiter in `/media/`; `hero-poster.jpg` bleibt Vorschaubild für Open Graph und JSON-LD.
+ * Studiofilm (`remaked_video.mp4`, 10-Bit-HEVC, 19,7 s): Hochdruckreiniger am eingeschäumten Wagen, Mikrofaser im
+ * Schaum am Kühlergrill, Mikrofasertuch auf dem Armaturenbrett – dieselben Einstellungen wie die vorige Fassung
+ * (`newOne.mp4`), aber ohne sichtbaren Mitarbeiter: an der Lanze nur noch der Strahl, die Hände in schwarzen
+ * Handschuhen. Harte Schnitte, Farbton unverändert, als H.264 (CRF 23) encodiert. Die ersten vier Bilder (eine
+ * stehende Totale) sind abgeschnitten – in der Schleife blitzten sie sonst alle 20 s auf. Die vorige Fassung
+ * (`pflege-*`) und der frühere Studiofilm (`hero-*`, Scheinwerfer im Nebel, Quelle `Inhouse-Partner-Startseite.mp4`)
+ * liegen weiter in `/media/`, sind aber nicht eingebunden; `hero-poster.jpg` bleibt Vorschaubild für Open Graph und
+ * JSON-LD.
  */
 export const studioFilm = {
   sources: {
-    /** Hochformat-Schnitt (608 × 1080) für Smartphones im Hochformat – schwenkt mit Mann, Handschuh und Tuch mit. */
-    portrait: '/media/pflege-portrait.mp4',
-    medium: '/media/pflege-720.mp4',
-    large: '/media/pflege-1080.mp4',
+    /**
+     * Hochformat-Schnitt (608 × 1080) für Smartphones im Hochformat: erst Strahl und Lanze am Wagen, danach schwenkt
+     * er mit Handschuh und Tuch mit (Schwenk wie bei der vorigen Fassung).
+     */
+    portrait: '/media/pflege2-portrait.mp4',
+    medium: '/media/pflege2-720.mp4',
+    large: '/media/pflege2-1080.mp4',
   },
   /** Erster Frame – das Video blendet nahtlos darüber. */
-  poster: { src: '/media/pflege-poster.jpg', width: 1920, height: 1080 },
-  posterPortrait: { src: '/media/pflege-poster-portrait.jpg', width: 608, height: 1080 },
-  /** Standbilder (Hochdruckreiniger am eingeschäumten Wagen) für „Bewegung reduzieren“. */
-  still: { src: '/media/pflege-still.jpg', width: 1920, height: 1080 },
-  stillPortrait: { src: '/media/pflege-still-portrait.jpg', width: 608, height: 1080 },
+  poster: { src: '/media/pflege2-poster.jpg', width: 1920, height: 1080 },
+  posterPortrait: { src: '/media/pflege2-poster-portrait.jpg', width: 608, height: 1080 },
+  /** Standbilder (Strahl des Hochdruckreinigers am eingeschäumten Wagen) für „Bewegung reduzieren“. */
+  still: { src: '/media/pflege2-still.jpg', width: 1920, height: 1080 },
+  stillPortrait: { src: '/media/pflege2-still-portrait.jpg', width: 608, height: 1080 },
   alt: 'Handwäsche im Studio: Der eingeschäumte Wagen wird mit dem Hochdruckreiniger abgespült und am Kühlergrill mit Mikrofaser gewaschen, danach wird das Armaturenbrett mit einem Mikrofasertuch gereinigt',
 } as const;
 
@@ -83,53 +112,60 @@ export interface ServiceFilm extends Required<PosterSet> {
  * dem Motiv mit.
  */
 
-/** Lackpolitur (`Lackpolitur.mp4`, Grading +15°): Poliermaschine auf dunklem Lack, langsame Kamerafahrt; 9 s. */
+/**
+ * Lackpolitur (`lackpolitur_new.mp4`, 10-Bit-HEVC, 6 s): Wollpad der Poliermaschine auf dunklem Lack, Hand im
+ * schwarzen Handschuh, langsame Kamerafahrt; 5-s-Schleife. Farbton unverändert. Die frühere Fassung
+ * (`lackpolitur-*`, Quelle `Lackpolitur.mp4`) liegt weiter in `/media/`, ist aber nicht eingebunden.
+ */
 export const polishFilm = {
   sources: {
-    portrait: '/media/lackpolitur-portrait.mp4',
-    landscape: '/media/lackpolitur-720.mp4',
+    portrait: '/media/lackpolitur2-portrait.mp4',
+    landscape: '/media/lackpolitur2-720.mp4',
   },
-  poster: { src: '/media/lackpolitur-poster.jpg', width: 1280, height: 720 },
-  posterPortrait: { src: '/media/lackpolitur-poster-portrait.jpg', width: 720, height: 1080 },
+  poster: { src: '/media/lackpolitur2-poster.jpg', width: 1280, height: 720 },
+  posterPortrait: { src: '/media/lackpolitur2-poster-portrait.jpg', width: 720, height: 1080 },
   /** Standbilder (Pad im Polierschleier) für „Bewegung reduzieren“. */
-  still: { src: '/media/lackpolitur-still.jpg', width: 1280, height: 720 },
-  stillPortrait: { src: '/media/lackpolitur-still-portrait.jpg', width: 720, height: 1080 },
-  position: '90% 0%',
+  still: { src: '/media/lackpolitur2-still.jpg', width: 1280, height: 720 },
+  stillPortrait: { src: '/media/lackpolitur2-still-portrait.jpg', width: 720, height: 1080 },
+  position: '55% 40%',
   alt: 'Mitarbeiter von Clean Car Solution poliert den dunklen Lack eines Fahrzeugs mit der Poliermaschine',
 } as const satisfies ServiceFilm;
 
 /**
- * Handwäsche (`CleanInnen.mp4`, H.264, 1920 × 1080, 15,5 s): Pinsel am Lenkrad, Mikrofaser an Wählhebel und
- * Bedienknopf, Schaumpinsel am Scheinwerfer, Reifenpflege, zum Schluss wieder das Lenkrad. Farbton unverändert.
- * Noch unbearbeitet übernommen (ohne ffmpeg): eine Datei für beide Formate – die Bühne schneidet mittig ins
- * Hochformat –, ohne Überblendung zur Schleife und mit 10 MB deutlich größer als die übrigen Filme (README → Medien).
+ * Handwäsche (`new_one_Remaked.mp4`, 10-Bit-HEVC, 15,4 s): Wählhebel und Bedienknopf, Schaumpinsel am
+ * Scheinwerfer, Reifenpflege, Pinsel am Lenkrad – Hände in Handschuhen, weiche Überblendungen. Die Schleife ist
+ * schon im Original nahtlos (das Lenkrad blendet in den Wählhebel über); die Web-Fassung beginnt beim klaren
+ * Wählhebel (Bild 12) statt mitten in der Überblendung. Farbton unverändert, als H.264 (CRF 23) encodiert; der
+ * Hochformat-Schnitt schwenkt durchgehend mit dem Motiv, auch über die Überblendungen hinweg. Die frühere Fassung
+ * (`handwaesche-1080.mp4` + `handwaesche-poster/-still*.jpg`, Quelle `CleanInnen.mp4`) liegt weiter in `/media/`,
+ * ist aber nicht mehr eingebunden.
  */
 export const handWashFilm = {
   sources: {
-    portrait: '/media/handwaesche-1080.mp4',
-    landscape: '/media/handwaesche-1080.mp4',
+    portrait: '/media/handwaesche2-portrait.mp4',
+    landscape: '/media/handwaesche2-720.mp4',
   },
-  /** Erster Frame (Hochformat: mittiger Ausschnitt wie auf der Bühne) – das Video blendet nahtlos darüber. */
-  poster: { src: '/media/handwaesche-poster.jpg', width: 1280, height: 720 },
-  posterPortrait: { src: '/media/handwaesche-poster-portrait.jpg', width: 720, height: 1080 },
+  /** Erster Frame (Wählhebel) – das Video blendet nahtlos darüber. */
+  poster: { src: '/media/handwaesche2-poster.jpg', width: 1280, height: 720 },
+  posterPortrait: { src: '/media/handwaesche2-poster-portrait.jpg', width: 720, height: 1080 },
   /** Standbilder (Schaumpinsel am Scheinwerfer) für „Bewegung reduzieren“. */
-  still: { src: '/media/handwaesche-still.jpg', width: 1280, height: 720 },
-  stillPortrait: { src: '/media/handwaesche-still-portrait.jpg', width: 720, height: 1080 },
-  position: '60% 50%',
-  alt: 'Handwäsche innen und außen: Pinsel und Mikrofaser im Innenraum, Schaumpinsel am Scheinwerfer und Reifenpflege',
+  still: { src: '/media/handwaesche2-still.jpg', width: 1280, height: 720 },
+  stillPortrait: { src: '/media/handwaesche2-still-portrait.jpg', width: 720, height: 1080 },
+  position: '55% 40%',
+  alt: 'Handwäsche innen und außen: Wählhebel und Bedienknopf, Schaumpinsel am Scheinwerfer, Reifenpflege und Pinsel am Lenkrad',
 } as const satisfies ServiceFilm;
 
 /**
- * Derselbe Film als Hero auf dem Smartphone (< 640 px): eigener Hochformat-Schnitt (608 × 1080, H.264 CRF 25,
- * 2,1 MB statt 10 MB), der Ausschnitt schwenkt mit dem Motiv – Wählhebel → Schaumpinsel am Scheinwerfer → Reifen
- * → Lenkrad; Anfang und Ende stehen gleich, damit die Schleife ruhig bleibt. Poster = erster Frame,
- * Standbild (Schaumpinsel am Scheinwerfer) für „Bewegung reduzieren“.
+ * Hero auf dem Smartphone (< 640 px): Hochformat-Schnitt der früheren Handwäsche-Fassung (`CleanInnen.mp4`,
+ * 608 × 1080, H.264 CRF 25, 2,1 MB), der Ausschnitt schwenkt mit dem Motiv – Wählhebel → Schaumpinsel am
+ * Scheinwerfer → Reifen → Lenkrad; Anfang und Ende stehen gleich, damit die Schleife ruhig bleibt. Poster = erster
+ * Frame, Standbild (Schaumpinsel am Scheinwerfer) für „Bewegung reduzieren“.
  */
 export const handWashHero = {
   src: '/media/handwaesche-hero.mp4',
   poster: { src: '/media/handwaesche-hero-poster.jpg', width: 608, height: 1080 },
   still: { src: '/media/handwaesche-hero-still.jpg', width: 608, height: 1080 },
-  alt: handWashFilm.alt,
+  alt: 'Handwäsche innen und außen: Pinsel und Mikrofaser im Innenraum, Schaumpinsel am Scheinwerfer und Reifenpflege',
 } as const;
 
 /**
@@ -151,21 +187,23 @@ export const interiorFilm = {
 } as const satisfies ServiceFilm;
 
 /**
- * Polster & Leder (`LederPolishing.mp4`): Mikrofasertuch pflegt die schwarze Leder-Rückbank, die zweite Hand hält
- * das Pflegeprodukt, langsame Kamerafahrt; 7 s. Farbton unverändert – +15° ließ die Hauttöne gelblich kippen.
+ * Polster & Leder (`leader_polishing.mp4`, 10-Bit-HEVC, 7 s): Hand im schwarzen Handschuh pflegt den gesteppten
+ * schwarzen Ledersitz mit dem Applikator-Pad, warmes Seitenlicht, langsame Kamerafahrt; 6-s-Schleife. Farbton
+ * unverändert. Die frühere Fassung (`leder-*`, Quelle `LederPolishing.mp4`) liegt weiter in `/media/`, ist aber
+ * nicht eingebunden.
  */
 export const leatherFilm = {
   sources: {
-    portrait: '/media/leder-portrait.mp4',
-    landscape: '/media/leder-720.mp4',
+    portrait: '/media/leder2-portrait.mp4',
+    landscape: '/media/leder2-720.mp4',
   },
-  poster: { src: '/media/leder-poster.jpg', width: 1280, height: 720 },
-  posterPortrait: { src: '/media/leder-poster-portrait.jpg', width: 720, height: 1080 },
-  /** Standbilder (Tuch auf dem Leder, daneben das Pflegeprodukt) für „Bewegung reduzieren“. */
-  still: { src: '/media/leder-still.jpg', width: 1280, height: 720 },
-  stillPortrait: { src: '/media/leder-still-portrait.jpg', width: 720, height: 1080 },
-  position: '50% 80%',
-  alt: 'Lederpflege bei Clean Car Solution: Die schwarze Leder-Rückbank wird mit Mikrofasertuch und Pflegeprodukt gepflegt',
+  poster: { src: '/media/leder2-poster.jpg', width: 1280, height: 720 },
+  posterPortrait: { src: '/media/leder2-poster-portrait.jpg', width: 720, height: 1080 },
+  /** Standbilder (Pad auf dem gesteppten Leder) für „Bewegung reduzieren“. */
+  still: { src: '/media/leder2-still.jpg', width: 1280, height: 720 },
+  stillPortrait: { src: '/media/leder2-still-portrait.jpg', width: 720, height: 1080 },
+  position: '50% 30%',
+  alt: 'Lederpflege bei Clean Car Solution: Ein gesteppter schwarzer Ledersitz wird mit dem Applikator-Pad gepflegt',
 } as const satisfies ServiceFilm;
 
 /**

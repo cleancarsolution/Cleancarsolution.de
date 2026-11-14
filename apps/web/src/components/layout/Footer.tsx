@@ -5,7 +5,7 @@ import { logoFiles } from '@/components/brand/logo-files';
 import { PartnerEndorsement } from '@/components/partner/PartnerEndorsement';
 import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { ArrowUpRight, Instagram, Mail, Phone, TikTok, WhatsApp } from '@/components/ui/icons';
+import { ArrowUpRight, Instagram, Mail, Phone, WhatsApp } from '@/components/ui/icons';
 import { Reveal } from '@/components/ui/Reveal';
 import { SmartLink } from '@/components/ui/SmartLink';
 import { contact } from '@/content/contact';
@@ -22,13 +22,19 @@ const copy = {
   legal: 'Rechtliches',
   home: 'zum Seitenanfang',
   whatsapp: 'WhatsApp',
-  credit: { lead: 'Erstellt mit Next.js & Turbopack von', studio: 'Palmer Digital' },
+  credit: {
+    lead: 'Erstellt mit Next.js & Turbopack von',
+    studio: 'Palmer Digital',
+    href: 'https://www.palmer-digital.de',
+  },
 } as const;
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
   Instagram: <Instagram className="size-[1.125rem]" />,
-  TikTok: <TikTok className="size-4" />,
 };
+
+/** Social Media im Footer – ohne TikTok. */
+const socials = site.socials.filter((social) => social.label !== 'TikTok');
 
 /** WhatsApp an dieselbe Nummer wie „Anrufen“ (wa.me erwartet sie international, ohne „+“). */
 const WHATSAPP_HREF = `https://wa.me/${primaryPhone.e164.replace(/^\+/, '')}`;
@@ -199,9 +205,8 @@ export function Footer() {
           <Reveal className="col-span-1 lg:col-span-3" y={20} delay={0.1}>
             <h2 className={headingClass}>{contact.methods.social}</h2>
             <ul className="mt-6 space-y-4">
-              {site.socials.map((social) => (
-                // TikTok erst ab Tablet – auf dem Smartphone nicht
-                <li key={social.href} className={social.label === 'TikTok' ? 'max-sm:hidden' : undefined}>
+              {socials.map((social) => (
+                <li key={social.href}>
                   <a
                     href={social.href}
                     target="_blank"
@@ -295,7 +300,16 @@ export function Footer() {
               © {year} {site.name}
             </p>
             <p>
-              {copy.credit.lead} <span className="font-medium whitespace-nowrap text-fg">{copy.credit.studio}</span>
+              {copy.credit.lead}{' '}
+              <a
+                href={copy.credit.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/link rounded-sm font-medium whitespace-nowrap text-fg"
+              >
+                <Underlined>{copy.credit.studio}</Underlined>
+                <span className="sr-only"> {contact.form.newTab}</span>
+              </a>
             </p>
           </div>
         </div>

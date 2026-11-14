@@ -6,6 +6,7 @@ import { MapPin } from '@/components/ui/icons';
 import { Sparkle } from '@/components/ui/Sparkle';
 import { hero } from '@/content/hero';
 import { Drift, ScrollDim } from './hero/Drift';
+import { HeroCopy } from './hero/HeroCopy';
 import { HeroHeadline } from './hero/HeroHeadline';
 import { HeroMedia } from './hero/HeroMedia';
 import { HeroStage } from './hero/HeroStage';
@@ -14,14 +15,17 @@ import { Rise, Spin } from './hero/Rise';
 import { ScrollCue } from './hero/ScrollCue';
 import { VideoToggle } from './hero/VideoToggle';
 
-/** Leicht rechts der Mitte: links steht die Headline, rechts arbeitet der Mitarbeiter (Heck-Einstellung). */
+/** Leicht rechts der Mitte: links steht die Headline, der Ausschnitt rückt das Motiv (Porsche, Hände, Maschine) nach rechts. */
 const OBJECT_POSITION = '64% 50%';
 
 /**
  * HERO (#top) – der Auftritt.
- * Idee: Nachtstudio. Der Banner-Film (Handwäsche im Sprühnebel, Front im Gegenlicht) trägt die Bühne;
+ * Idee: Nachtstudio. Der Banner-Film (Porsche im Nebel mit eingeblendeten Produkten, Schaum, Abspülen, Mikrofaser,
+ * Politur) trägt die Bühne;
  * davor eine ruhige, asymmetrische Typo-Komposition und – als einziges Rot – die rotierende Preis-Plakette
- * aus dem Banner („ab 89 €“). Beim Herausscrollen driftet der Inhalt nach oben, das Bild taucht ins Dunkel.
+ * aus dem Banner („ab 89 €“). Solange die Produkte im Film zu sehen sind, steht statt des Hero-Texts die
+ * Produktzeile („Wir arbeiten mit professionellen Produkten“, `HeroCopy`).
+ * Beim Herausscrollen driftet der Inhalt nach oben, das Bild taucht ins Dunkel.
  * Smartphone (< 640 px): Handwäsche-Film statt Banner-Film, kurz und knapp – Eyebrow in einer Zeile,
  * Headline in zwei Zeilen, ohne Lead.
  */
@@ -78,7 +82,13 @@ export function Hero() {
       {/* Oben bleibt immer Platz für Header + Plakette (wächst auf kurzen Screens statt zu überlappen) */}
       <Drift className="relative mt-auto pt-[12.5rem] sm:pt-[16rem] xl:pt-[18rem]" distance={150} fadeOutAt={0.6}>
         <Container>
-          <div className="relative grid grid-cols-12 items-end gap-x-5 lg:gap-x-8">
+          {/* Während der Produktszene des Films steht hier statt des Hero-Texts die Produktzeile */}
+          <HeroCopy
+            scene={hero.video.productScene}
+            films={Object.values(hero.video.sources)}
+            line={hero.productLine}
+            className="relative grid grid-cols-12 items-end gap-x-5 lg:gap-x-8"
+          >
             <Spin
               delay={1.05}
               className="absolute right-0 bottom-full mb-7 w-[5.75rem] sm:mb-10 sm:w-32 xl:mb-14 xl:w-[9.25rem]"
@@ -139,7 +149,7 @@ export function Hero() {
                 </ButtonLink>
               </Rise>
             </div>
-          </div>
+          </HeroCopy>
         </Container>
       </Drift>
 

@@ -37,6 +37,23 @@ export const offer = {
     cta: 'Kostenlos beraten lassen',
     service: 'beratung' satisfies InquiryServiceValue,
   },
-  /** Zeile unter den Karten – Produktmarken laut Banner (site.brands). */
-  brandsLabel: 'Wir arbeiten mit Produkten von',
+  /**
+   * Produkt-Slider unter der Preisliste. Fotos freigestellt in `/images/produkte/`, auf die deckende Fläche
+   * zugeschnitten und gleich hoch auf 880 × 1000 px gebracht (unten bündig) – so stehen alle gleich groß auf derselben
+   * Bodenlinie. Reihenfolge wie vom Kunden nummeriert (1–5).
+   */
+  products: {
+    title: 'Wir arbeiten mit hochqualitativen Produkten',
+    controls: { prev: 'Zurückblättern', next: 'Weiterblättern' },
+    items: [
+      { src: '/images/produkte/labocosmetica-derma-cleaner.png', alt: 'Labocosmetica #Derma Cleaner, Lederreiniger' },
+      { src: '/images/produkte/3d-one.png', alt: '3D One, Schleif- und Finishpolitur' },
+      { src: '/images/produkte/koch-chemie-micro-cut-m2-02.png', alt: 'Koch-Chemie Micro Cut M2.02, Micro-Schleifpolitur' },
+      {
+        src: '/images/produkte/servfaces-surface-cleaner-pro.png',
+        alt: 'ServFaces Surface Cleaner PRO, Entfetter- und Kontrollspray',
+      },
+      { src: '/images/produkte/koch-chemie-fine-cut-f6-01.png', alt: 'Koch-Chemie Fine Cut F6.01, feine Schleifpolitur' },
+    ],
+  },
 } as const;

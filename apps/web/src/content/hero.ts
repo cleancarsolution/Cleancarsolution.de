@@ -10,6 +10,22 @@ export const hero = {
   /** Das eine Akzentwort (Verlaufstext) der Headline – die Handarbeit ist der Kern der Marke. */
   accent: 'Hand',
   lead: 'Professionelle Handwäsche, Polster- & Lederpflege und Aufbereitung für Fahrzeuge, die mehr verdienen als eine Waschstraße.',
+  /**
+   * Produktszene des Banner-Films (`bannerFilm.productScene`): Eyebrow, Headline, Lead und CTAs treten zurück, an
+   * ihrer Stelle steht dieser Satz – Auftakt klein wie die Eyebrow, der Rest groß in Versalien –, darunter ab
+   * Sekunde 3 die Logos der Hersteller. Danach kehrt der Hero-Text zurück.
+   */
+  productLine: {
+    lead: 'Wir arbeiten mit',
+    statement: 'professionellen Produkten von:',
+    /** Das eine Wort mit Verlaufstext. */
+    accent: 'professionellen',
+    /**
+     * Herstellerlogos in einer Reihe (erscheinen nacheinander) – weiß auf transparent, eng beschnitten, unter
+     * `/images/marken/` (docs/DESIGN.md §7). Weitere Logos einfach anhängen.
+     */
+    logos: [{ name: 'ServFaces', src: '/images/marken/servfaces.png', width: 285, height: 340 }],
+  },
   primaryCta: { label: 'Termin anfragen', href: '/#kontakt' },
   secondaryCta: { label: 'Leistungen entdecken', href: '/#leistungen' },
   offer: {
@@ -19,7 +35,7 @@ export const hero = {
     /** Das rote Preis-Badge der Banner, neu interpretiert – führt zur Preis-Sektion. */
     href: '/#preise',
   },
-  /** H.264, ohne Ton, 17,6 s Loop – Hero-Banner; auf dem Smartphone der Handwäsche-Film (siehe content/media.ts). */
+  /** H.264, ohne Ton, 15,3 s Loop – Hero-Banner; auf dem Smartphone der Handwäsche-Film (siehe content/media.ts). */
   video: {
     ...bannerFilm,
     phone: handWashHero,
